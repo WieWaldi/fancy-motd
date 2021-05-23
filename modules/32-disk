@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_DISK_RUN" = "true" ]; then
+    exit 0
+fi
+
 disks=($(df | grep '^/dev' | cut -d' ' -f1 ))
 all_disks_stats="$(df -h)"
 

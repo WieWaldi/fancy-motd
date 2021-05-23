@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_IP_RUN" = "true" ]; then
+    exit 0
+fi
+
 ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
 IFS=$'\n' read -r -a ips <<< $ips_v4
 

@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-
-# Default services, have to be declared before sourcing framework.sh so the user can override them
-declare -A services
-services["nginx"]="nginx"
-services["Docker"]="docker"
-services["SSH"]="sshd"
-services["Fail2Ban"]="fail2ban"
-services["UFW"]="ufw"
-
 source "$BASE_DIR/framework.sh"
+
+# Check if module is enabled
+if [ ! "$MOD_SERVICES_LINUX_RUN" = "true" ]; then
+    exit 0
+fi
 
 statuses=()
 for key in "${!services[@]}"; do

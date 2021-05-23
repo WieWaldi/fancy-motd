@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_USER_RUN" = "true" ]; then
+    exit 0
+fi
+
 user=${USER:-$(id -un)}
 hostname=${HOSTNAME:-$(hostname)}
 

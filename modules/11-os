@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_OS_RUN" = "true" ]; then
+    exit 0
+fi
+
 source "/etc/os-release"
 
 print_columns "OS" "$NAME"

@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_LOAD_RUN" = "true" ]; then
+    exit 0
+fi
+
 loads="$(cat /proc/loadavg | cut -d ' ' -f '1,2,3')"
 nproc=$(nproc)
 warning_threshold=$(bc -l <<< "$nproc * 0.9")

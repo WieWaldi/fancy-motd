@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_MEMORY_RUN" = "true" ]; then
+    exit 0
+fi
+
 freeh="$(free -h)"
 freem="$(free -m)"
 

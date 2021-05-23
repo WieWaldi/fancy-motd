@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_UPTIME_RUN" = "true" ]; then
+    exit 0
+fi
+
 uptime=$(uptime -p | cut -d ' ' -f 2-)
 
 print_columns "Uptime" "$uptime"

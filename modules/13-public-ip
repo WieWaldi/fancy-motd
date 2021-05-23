@@ -3,6 +3,11 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+if [ ! "$MOD_PUBLIC_IP_RUN" = "true" ]; then
+    exit 0
+fi
+
 ip_v4="$(curl ifconfig.me/ip)"
 
 text="$(print_wrap $WIDTH "${ip_v4}")"
