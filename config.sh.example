@@ -8,6 +8,10 @@ CN="\e[0m"   # None
 # Max width used for components in second column
 WIDTH=50
 
+# Choose between Hostname and FQDN for the banner.
+# Displaying the fully qualified domain name as banner may get pretty messy.
+BANNER="HOSTNAME"
+
 # Services to show
 declare -A services
 services["nginx"]="nginx"

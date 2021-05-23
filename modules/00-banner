@@ -5,4 +5,8 @@ source "$BASE_DIR/framework.sh"
 
 hostname=${HOSTNAME:-$(hostname)}
 
-print_columns "" "${CA}$(figlet $hostname)${CN}"
+if [ "$BANNER" = "HOSTNAME" ]; then
+    print_columns "" "${CA}$(figlet ${hostname%%.*})${CN}"
+else
+    print_columns "" "${CA}$(figlet $hostname)${CN}"
+fi
