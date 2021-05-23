@@ -3,14 +3,24 @@
 # Don't change! We want predictable outputs
 export LANG="en_US.UTF-8"
 
-# Dir of this scrip
+# Dir of this script
 export BASE_DIR="$(dirname "$(readlink -f "$0")")"
 
 # Set config path
 if [ -z ${1+x} ]; then
     export CONFIG_PATH="$BASE_DIR/config.sh"
+    if [ ! -f "$CONFIG_PATH" ] && [ -f "$BASE_DIR/config.sh.example" ]; then
+        cp $BASE_DIR/config.sh.example $CONFIG_PATH
+    fi
 else
     export CONFIG_PATH="$1"
+fi
+
+# Check for config path
+if [ ! -f "$CONFIG_PATH" ]; then
+    echo "Error: No config file found."
+    echo "       You may provide one like this: $0 /your/path/config.sh"
+    exit 1
 fi
 
 # Source the framework
