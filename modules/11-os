@@ -8,6 +8,8 @@ if [ ! "$MOD_OS_RUN" = "true" ]; then
     exit 0
 fi
 
-source "/etc/os-release"
+get_os
 
-print_columns "OS" "$NAME"
+# source "/etc/os-release"
+
+print_columns "OS" "$os $arch"
