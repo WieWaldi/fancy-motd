@@ -17,7 +17,7 @@ elif [ "$os" == "SunOS" ]; then
     ips_v4="$(ifconfig | grep -e 'inet .*broadcast' | cut -d ' ' -f '2')"
 fi
 
-ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
+# ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
 IFS=$'\n' read -r -a ips <<< $ips_v4
 
 text="$(print_wrap $WIDTH "${ips[@]}")"
