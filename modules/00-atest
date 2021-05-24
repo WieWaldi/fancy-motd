@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+#======== ATEST: Template and Test Script =====================================
+set -euo pipefail
+source "$BASE_DIR/framework.sh"
+
+# Check if module is enabled
+if [ ! "$MOD_ATEST_RUN" = "true" ]; then
+    exit 0
+fi
+
+print_columns "ATEST" "I'm alive"
+

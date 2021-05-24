@@ -10,6 +10,9 @@ CN="\e[0m"									# None
 # Max width used for components in second column
 WIDTH=50
 
+#======== Module Config: ATEST ================================================
+# MOD_ATEST_RUN="true"						# Comment to disable module
+
 #======== Module Config: BANNER ===============================================
 MOD_BANNER_RUN="true"						# Comment to disable module
 MOD_BANNER_PRINT="HOSTNAME"					# Comment to print FQDN
