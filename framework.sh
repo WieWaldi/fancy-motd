@@ -12,6 +12,13 @@ CN="${CN:-\e[0m}"   # None
 # Max width used for components in second column
 WIDTH="${WIDTH:-50}"
 
+get_os () {
+    read -r os kernel arch <<-EOF
+        $(uname -srm)
+EOF
+}
+
+
 # Prints given blocks of text side by side
 # $1 - left column
 # $2 - right column
