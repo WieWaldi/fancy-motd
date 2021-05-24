@@ -8,6 +8,15 @@ if [ ! "$MOD_IP_RUN" = "true" ]; then
     exit 0
 fi
 
+get_os
+if [ "$os" == "FreeBSD" ]; then
+    ips_v4="$(ifconfig | grep -e 'inet .*broadcast' | cut -d ' ' -f '2')"
+elif [ "$os" == "Linux" ]; then
+    ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
+elif [ "$os" == "SunOS" ]; then
+    ips_v4="$(ifconfig | grep -e 'inet .*broadcast' | cut -d ' ' -f '2')"
+fi
+
 ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
 IFS=$'\n' read -r -a ips <<< $ips_v4
 
