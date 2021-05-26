@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
@@ -8,10 +7,21 @@ if [ ! "$MOD_MEMORY_RUN" = "true" ]; then
     exit 0
 fi
 
-freeh="$(free -h)"
-freem="$(free -m)"
+mem_rounded () {
+    mem_size=$1
+    chip_size=1
+    chip_guess=$(echo "$mem_size / 8 - 1" | bc)
+    while [ $chip_guess != 0 ]
+        do
+                chip_guess=$(echo "$chip_guess / 2" | bc)
+                chip_size=$(echo "$chip_size * 2" | bc)
+    done
+    mem_round=$(echo "( $mem_size / $chip_size + 1 ) * $chip_size" | bc)
+    echo $mem_round
+        exit 0
+}
 
-ram() {
+ram_Linux () {
     local memory total used available label percentage bar
     memory="$(awk '/Mem/ {print $2,$3,$7}' <<< $freeh)"
     IFS=" " read -r total used available <<< $memory
@@ -23,9 +33,24 @@ ram() {
     echo "$label\n$bar"
 }
 
-swap() {
-    local swap total used available label percentage bar
+ram_FreeBSD () {
+    local memory total used available label percentage bar
+    sysctl_pagesize=$(sysctl -n hw.pagesize)
+    mem_phys=$(sysctl -n hw.physmem)
+    mem_inactive=$(echo "$(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize" | bc)
+    mem_cache=$(echo "$(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize" | bc)
+    mem_free=$(echo "$(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize" | bc)
+    mem_total=$(mem_rounded $mem_phys)
+    mem_avail=$(echo "$mem_inactive + $mem_cache + $mem_free" | bc)
+    mem_used=$(
+}
 
+ram_SunOS () {
+    local memory total used available label percentage bar
+}
+
+swap_Linux () {
+    local swap total used available label percentage bar
     # Return if no swap
     [ "$(awk '/Swap/ {print $2}' <<< $freem)" -eq 0 ] && return
 
@@ -39,8 +64,31 @@ swap() {
     echo "$label\n$bar"
 }
 
-out="$(ram)"
-swap="$(swap)"
-[ -n "$swap" ] && out+="\n$swap"
+swap_FreeBSD () {
+    local swap total used available label percentage bar
+}
+
+swap_SunOS () {
+    local swap total used available label percentage bar
+}
+
+get_os
+case $os in
+    Linux*)
+        freeh="$(free -h)"
+        freem="$(free -m)"
+        out="$(ram_Linux)"
+        swap="$(swap_Linux)"
+        [ -n "$swap" ] && out+="\n$swap"
+    ;;
+
+    FreeBSD)
+        print_columns "Memory" "not working yet"
+    ;;
+
+    SunOS)
+        print_columns "Memory" "not working yet"
+    ;;
+esac
 
 print_columns "Memory" "$out"
