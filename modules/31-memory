@@ -50,7 +50,7 @@ ram_FreeBSD () {
     mem_total=$mem_hw
     mem_avail=$(( $mem_inactive + $mem_cache + $mem_free ))
     mem_used=$(( $mem_total - $mem_avail ))
-    if [ "$MOD_MEMORY_FREEBSD_VERBOSE" = "true" ]; then
+    if [ ! -z ${MOD_MEMORY_FREEBSD_VERBOSE+x} ]; then
         printf "Wired:                    %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
         printf "Active:                  +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
         printf "Inactive:                +%12d (%7dMB) %s\n" $mem_inactive $(( $mem_inactive / ( 1024 * 1024) ))
