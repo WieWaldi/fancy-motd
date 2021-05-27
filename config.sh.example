@@ -38,6 +38,7 @@ MOD_LOAD_RUN="true"							# Comment to disable module
 
 #======== Module Config: MEMORY ===============================================
 MOD_MEMORY_RUN="true"						# Comment to disable module
+MOD_MEMORY_FREEBSD_VERBOSE="true"			# Comment to disable module
 
 #======== Module Config: DISK =================================================
 MOD_DISK_RUN="true"							# Comment to disable module

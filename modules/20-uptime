@@ -14,7 +14,7 @@ case $os in
         IFS=. read -r s _ < /proc/uptime
     ;;
 
-    *BSD*)
+    FreeBSD)
         s=$(sysctl -n kern.boottime)
         s=${s#*=}
         s=${s%,*}
@@ -33,12 +33,4 @@ d=$((s / 60 / 60 / 24))
 h=$((s / 60 / 60 % 24))
 m=$((s / 60 % 60))
 
-
-
-
-
-
-# uptime=$(uptime -p | cut -d ' ' -f 2-)
-
-# print_columns "Uptime" "$uptime"
 print_columns "Uptime" "${d}d ${h}h ${m}m"

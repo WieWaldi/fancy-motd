@@ -34,7 +34,7 @@ ram_Linux () {
 }
 
 ram_FreeBSD () {
-    local memory total used available label percentage bar
+    local mem_phys mem_hw mem_all mem_wire mem_active mem_inactive mem_cache mem_free mem_gap_vm mem_gap_sys mem_gap_hw mem_total mem_avail mem_used label percentage bar
     sysctl_pagesize=$(sysctl -n hw.pagesize)
     mem_phys=$(sysctl -n hw.physmem)
     mem_hw=$(mem_rounded $mem_phys)
@@ -44,34 +44,30 @@ ram_FreeBSD () {
     mem_inactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize ))
     mem_cache=$(( $(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize ))
     mem_free=$(( $(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize ))
-
     mem_gap_vm=$(( $mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free ) ))
     mem_gap_sys=$(( $mem_phys - $mem_all ))
     mem_gap_hw=$(( $mem_hw - $mem_phys ))
-
     mem_total=$mem_hw
     mem_avail=$(( $mem_inactive + $mem_cache + $mem_free ))
     mem_used=$(( $mem_total - $mem_avail ))
+    if [ "$MOD_MEMORY_FREEBSD_VERBOSE" = "true" ]; then
+        printf "Wired:                    %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
+        printf "Active:                  +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
+        printf "Inactive:                +%12d (%7dMB) %s\n" $mem_inactive $(( $mem_inactive / ( 1024 * 1024) ))
+        printf "Cache                    +%12d (%7dMB) %s\n" $mem_cache $(( $mem_cache / ( 1024 * 1024) ))
+        printf "Free                     +%12d (%7dMB) %s\n" $mem_free $(( $mem_free / ( 1024 * 1024) ))
+        printf "Gap (Unknown)            +%12d (%7dMB) %s\n" $mem_gap_vm $(( $mem_gap_vm / ( 1024 * 1024) ))
+        printf "__________________________________________________\n"
+        printf "Total managed            =%12d (%7dMB) %s\n" $mem_all $(( $mem_all / ( 1024 * 1024) ))
+        printf "Gap (Kernel)             +%12d (%7dMB) %s\n" $mem_gap_sys $(( $mem_gap_sys / ( 1024 * 1024) ))
+        printf "__________________________________________________\n"
+        printf "Mem. installed           =%12d (%7dMB) %s\n\n" $mem_hw $(( $mem_hw / ( 1024 * 1024) ))
+    fi
 
     percentage=$(( $mem_used * 100 / $mem_total ))
-
-    printf "Wired:                    %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
-    printf "Active:                  +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
-    printf "Inactive:                +%12d (%7dMB) %s\n" $mem_inactive $(( $mem_inactive / ( 1024 * 1024) ))
-    printf "Cache                    +%12d (%7dMB) %s\n" $mem_cache $(( $mem_cache / ( 1024 * 1024) ))
-    printf "Free                     +%12d (%7dMB) %s\n" $mem_free $(( $mem_free / ( 1024 * 1024) ))
-    printf "Gap (Unknown)            +%12d (%7dMB) %s\n" $mem_gap_vm $(( $mem_gap_vm / ( 1024 * 1024) ))
-    printf "__________________________________________________\n"
-    printf "Total managed            =%12d (%7dMB) %s\n" $mem_all $(( $mem_all / ( 1024 * 1024) ))
-    printf "Gap (Kernel)             +%12d (%7dMB) %s\n" $mem_gap_sys $(( $mem_gap_sys / ( 1024 * 1024) ))
-    printf "__________________________________________________\n"
-    printf "Mem. installed           =%12d (%7dMB) %s\n" $mem_hw $(( $mem_hw / ( 1024 * 1024) ))
-
     label="$(print_split $WIDTH "RAM - $(( $mem_used / ( 1024 * 1024 ) ))MB used, $(( $mem_avail / ( 1024 * 1024 ) ))MB available" "/ $(( $mem_total / ( 1024 * 1024 ) ))MB")"
     bar="$(print_bar $WIDTH $percentage)"
     echo "$label\n$bar"
-
-
 }
 
 ram_SunOS () {

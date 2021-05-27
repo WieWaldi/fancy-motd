@@ -3,6 +3,7 @@
 #======== ATEST: Template and Test Script =====================================
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
+get_os
 
 # Check if module is enabled
 if [ ! "$MOD_ATEST_RUN" = "true" ]; then
@@ -10,4 +11,6 @@ if [ ! "$MOD_ATEST_RUN" = "true" ]; then
 fi
 
 print_columns "ATEST" "I'm alive"
-
+print_columns "OS" "${os}"
+print_columns "Kernel" "${kernel}"
+print_columns "Arch" "${arch}"
