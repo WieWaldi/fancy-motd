@@ -55,17 +55,17 @@ ram_FreeBSD () {
 
     percentage=$(( $mem_used * 100 / $mem_total ))
 
-    printf "Wired:          %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
-    printf "Active:        +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
-    printf "Inactive:      +%12d (%7dMB) %s\n" $mem_inactive $(( $mem_inactive / ( 1024 * 1024) ))
-    printf "Cache          +%12d (%7dMB) %s\n" $mem_cache $(( $mem_cache / ( 1024 * 1024) ))
-    printf "Free           +%12d (%7dMB) %s\n" $mem_free $(( $mem_free / ( 1024 * 1024) ))
-    printf "Gap (Unknown)  +%12d (%7dMB) %s\n" $mem_gap_vm $(( $mem_gap_vm / ( 1024 * 1024) ))
-    printf "________________________\n"
-    printf "Total managed  =%12d (%7dMB) %s\n" $mem_all $(( $mem_all / ( 1024 * 1024) ))
-    printf "Gap (Kernel)   +%12d (%7dMB) %s\n" $mem_gap_sys $(( $mem_gap_sys / ( 1024 * 1024) ))
-    printf "________________________\n"
-    printf "Mem. installed =%12d (%7dMB) %s\n" $mem_hw $(( $mem_hw / ( 1024 * 1024) ))
+    printf "Wired:                    %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
+    printf "Active:                  +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
+    printf "Inactive:                +%12d (%7dMB) %s\n" $mem_inactive $(( $mem_inactive / ( 1024 * 1024) ))
+    printf "Cache                    +%12d (%7dMB) %s\n" $mem_cache $(( $mem_cache / ( 1024 * 1024) ))
+    printf "Free                     +%12d (%7dMB) %s\n" $mem_free $(( $mem_free / ( 1024 * 1024) ))
+    printf "Gap (Unknown)            +%12d (%7dMB) %s\n" $mem_gap_vm $(( $mem_gap_vm / ( 1024 * 1024) ))
+    printf "__________________________________________________\n"
+    printf "Total managed            =%12d (%7dMB) %s\n" $mem_all $(( $mem_all / ( 1024 * 1024) ))
+    printf "Gap (Kernel)             +%12d (%7dMB) %s\n" $mem_gap_sys $(( $mem_gap_sys / ( 1024 * 1024) ))
+    printf "__________________________________________________\n"
+    printf "Mem. installed           =%12d (%7dMB) %s\n" $mem_hw $(( $mem_hw / ( 1024 * 1024) ))
 
     label="$(print_split $WIDTH "RAM - $(( $mem_used / ( 1024 * 1024 ) ))MB used, $(( $mem_avail / ( 1024 * 1024 ) ))MB available" "/ $(( $mem_total / ( 1024 * 1024 ) ))MB")"
     bar="$(print_bar $WIDTH $percentage)"
