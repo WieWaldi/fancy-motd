@@ -38,27 +38,28 @@ ram_FreeBSD () {
     sysctl_pagesize=$(sysctl -n hw.pagesize)
     mem_phys=$(sysctl -n hw.physmem)
     mem_hw=$(mem_rounded $mem_phys)
-    mem_all=$(echo "$(sysctl -n vm.stats.vm.v_page_count) * $sysctl_pagesize" | bc)
-    mem_wire=$(echo "$(sysctl -n vm.stats.vm.v_wire_count) * $sysctl_pagesize" | bc)
-    mem_active=$(echo "$(sysctl -n vm.stats.vm.v_active_count) * $sysctl_pagesize" | bc)
-    mem_inactive=$(echo "$(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize" | bc)
-    mem_cache=$(echo "$(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize" | bc)
-    mem_free=$(echo "$(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize" | bc)
+    mem_all=$(( $(sysctl -n vm.stats.vm.v_page_count) * $sysctl_pagesize ))
+    mem_wire=$(( $(sysctl -n vm.stats.vm.v_wire_count) * $sysctl_pagesize ))
+    mem_active=$(( $(sysctl -n vm.stats.vm.v_active_count) * $sysctl_pagesize ))
+    mem_inactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize ))
+    mem_cache=$(( $(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize ))
+    mem_free=$(( $(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize ))
 
-    mem_gap_vm=$(echo "$mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free )" | bc)
-    mem_gap_sys=$(echo "$mem_phys - $mem_all" | bc)
-    mem_gap_hw=$(echo echo "$mem_hw - $mem_phys" | bc)
+    mem_gap_vm=$(( $mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free ) ))
+    mem_gap_sys=$(( $mem_phys - $mem_all ))
+    mem_gap_hw=$(( $mem_hw - $mem_phys ))
 
     mem_total=$mem_hw
-    mem_avail=$(echo "$mem_inactive + $mem_cache + $mem_free" | bc)
-    mem_used=$(echo "$mem_total - $mem_avail" | bc)
+    mem_avail=$(( $mem_inactive + $mem_cache + $mem_free ))
+    mem_used=$(( $mem_total - $mem_avail ))
 
-    percentage=$(echo "$mem_used * 100 / $mem_total" | bc)
+    percentage=$(( $mem_used * 100 / $mem_total ))
 
     echo "mem_hw: $mem_hw"
     echo "mem_avail: $mem_avail"
     echo "mem_used: $mem_used"
     echo "percentage: $percentage"
+
 
 }
 
