@@ -60,6 +60,10 @@ ram_FreeBSD () {
     echo "mem_used: $mem_used"
     echo "percentage: $percentage"
 
+    label="$(print_split $WIDTH "RAM - ${mem_used::-1} used, ${mem_avail::-1} available" "/ ${mem_total::-1}")"
+    bar="$(print_bar $WIDTH $percentage)"
+    echo "$label\n$bar"
+
 
 }
 
