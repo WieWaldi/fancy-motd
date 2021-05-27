@@ -37,12 +37,26 @@ ram_FreeBSD () {
     local memory total used available label percentage bar
     sysctl_pagesize=$(sysctl -n hw.pagesize)
     mem_phys=$(sysctl -n hw.physmem)
+    mem_hw=$(mem_rounded $mem_phys)
+    mem_all=$(echo "$(sysctl -n vm.stats.vm.v_page_count) * $sysctl_pagesize" | bc)
+    mem_wire=$(echo "$(sysctl -n vm.stats.vm.v_wire_count) * $sysctl_pagesize" | bc)
+    mem_active=$(echo "$(sysctl -n vm.stats.vm.v_active_count) * $sysctl_pagesize" | bc)
     mem_inactive=$(echo "$(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize" | bc)
     mem_cache=$(echo "$(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize" | bc)
     mem_free=$(echo "$(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize" | bc)
-    mem_total=$(mem_rounded $mem_phys)
+
+    mem_gap_vm=$(echo "$mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free )" | bc)
+    mem_gap_sys=$(echo "$mem_phys - $mem_all" | bc)
+    mem_gap_hw=$(echo echo "$mem_hw - $mem_phys" | bc)
+
+    mem_total=$mem_hw
     mem_avail=$(echo "$mem_inactive + $mem_cache + $mem_free" | bc)
-    mem_used=$(
+    mem_used=$(echo "$mem_total - $mem_avail" | bc)
+
+    echo "mem_hw: $mem_hw"
+    echo "mem_avail: $mem_avail"
+    echo "mem_used: $mem_used"
+
 }
 
 ram_SunOS () {
@@ -83,7 +97,7 @@ case $os in
     ;;
 
     FreeBSD)
-        print_columns "Memory" "not working yet"
+        out=$(ram_FreeBSD)
     ;;
 
     SunOS)
