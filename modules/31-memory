@@ -55,13 +55,16 @@ ram_FreeBSD () {
 
     percentage=$(( $mem_used * 100 / $mem_total ))
 
+    printf "mem_wire:      %7dMB %s\n" $(( $(mem_wire) / ( 1024 * 1024) ))
+    printf "mem_active:    %7dMB %s\n" $(( $(mem_active) / ( 1024 * 1024) ))
+    printf "mem_inactive:  %7dMB %s\n" $(( $(mem_inactive) / ( 1024 * 1024) ))
+
     echo "mem_hw: $mem_hw"
     echo "mem_avail: $mem_avail"
     echo "mem_used: $mem_used"
     echo "percentage: $percentage"
 
-#     label="$(print_split $WIDTH "RAM - ${mem_used::-1} used, ${mem_avail::-1} available" "/ ${mem_total::-1}")"
-    label="$(print_split $WIDTH "RAM - $(( $mem_used / ( 1024 * 1024 ) )) used, $(( $mem_avail / ( 1024 * 1024 ) )) available" "/ $(( $mem_total / ( 1024 * 1024 ) ))")"
+    label="$(print_split $WIDTH "RAM - $(( $mem_used / ( 1024 * 1024 ) ))MB used, $(( $mem_avail / ( 1024 * 1024 ) ))MB available" "/ $(( $mem_total / ( 1024 * 1024 ) ))MB")"
     bar="$(print_bar $WIDTH $percentage)"
     echo "$label\n$bar"
 
