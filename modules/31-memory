@@ -98,9 +98,13 @@ swap_FreeBSD () {
     available="$(( $total - $used ))"
     label="$(print_split $WIDTH "Swap - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
 
-    percentage="$(awk '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)"
+    # percentage="$(awk '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)"
+    percentage="$(( $used * 100 / $total ))"
     bar="$(print_bar $WIDTH $percentage)"
 
+    echo "total: $total"
+    echo "used: $used"
+    echo "avail: $available"
     echo "$label\n$bar"
 }
 
