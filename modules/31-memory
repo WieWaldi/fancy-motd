@@ -72,43 +72,40 @@ ram_FreeBSD () {
 
 ram_SunOS () {
     local memory total used available label percentage bar
+    echo "This is not working yet."
 }
 
 swap_Linux () {
     local swap total used available label percentage bar
+
     # Return if no swap
     [ "$(awk '/Swap/ {print $2}' <<< $freem)" -eq 0 ] && return
 
     swap="$(awk '/Swap/ {print $2,$3,$4}' <<< $freeh)"
     IFS=" " read -r total used available <<< $swap
     label="$(print_split $WIDTH "Swap - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
-
     percentage="$(awk '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)"
     bar="$(print_bar $WIDTH $percentage)"
-
     echo "$label\n$bar"
 }
 
 swap_FreeBSD () {
     local total used available label percentage bar
+
     # Return if no swap
     [ "$(awk '{print $1}' <<< $swapctl)" -eq 0 ] && return
 
     IFS=" " read -r total used <<< $swapctl
     available="$(( $total - $used ))"
-    label="$(print_split $WIDTH "Swap - ${used}MB used, ${available}MB available" "/ ${total}")"
-
+    label="$(print_split $WIDTH "Swap - ${used}MB used, ${available}MB available" "/ ${total}MB")"
     percentage="$(( $used * 100 / $total ))"
     bar="$(print_bar $WIDTH $percentage)"
-
-    echo "total: $total"
-    echo "used: $used"
-    echo "avail: $available"
     echo "$label\n$bar"
 }
 
 swap_SunOS () {
     local swap total used available label percentage bar
+    echo "This is not working yet."
 }
 
 get_os
@@ -129,7 +126,9 @@ case $os in
     ;;
 
     SunOS)
-        out="This is not working yet"
+        out="$(ram_SunOS)"
+        swap="$(swap_SunOS)"
+        [ -n "$swap" ] && out+="\n$swap"
     ;;
 esac
 
