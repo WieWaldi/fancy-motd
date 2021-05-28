@@ -10,13 +10,13 @@ fi
 mem_rounded () {
     mem_size=$1
     chip_size=1
-    chip_guess=$(echo "$mem_size / 8 - 1" | bc)
+    chip_guess="$(echo "$mem_size / 8 - 1" | bc)"
     while [ $chip_guess != 0 ]
         do
-                chip_guess=$(echo "$chip_guess / 2" | bc)
-                chip_size=$(echo "$chip_size * 2" | bc)
+                chip_guess="$(echo "$chip_guess / 2" | bc)"
+                chip_size="$(echo "$chip_size * 2" | bc)"
     done
-    mem_round=$(echo "( $mem_size / $chip_size + 1 ) * $chip_size" | bc)
+    mem_round="$(echo "( $mem_size / $chip_size + 1 ) * $chip_size" | bc)"
     echo $mem_round
         exit 0
 }
@@ -26,30 +26,28 @@ ram_Linux () {
     memory="$(awk '/Mem/ {print $2,$3,$7}' <<< $freeh)"
     IFS=" " read -r total used available <<< $memory
     label="$(print_split $WIDTH "RAM - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
-
-    percentage=$(awk '/Mem/ {printf "%.0f", ($2-$7)/$2*100}' <<< $freem)
+    percentage="$(awk '/Mem/ {printf "%.0f", ($2-$7)/$2*100}' <<< $freem)"
     bar="$(print_bar $WIDTH $percentage)"
-
     echo "$label\n$bar"
 }
 
 ram_FreeBSD () {
     local mem_phys mem_hw mem_all mem_wire mem_active mem_inactive mem_cache mem_free mem_gap_vm mem_gap_sys mem_gap_hw mem_total mem_avail mem_used label percentage bar
-    sysctl_pagesize=$(sysctl -n hw.pagesize)
-    mem_phys=$(sysctl -n hw.physmem)
-    mem_hw=$(mem_rounded $mem_phys)
-    mem_all=$(( $(sysctl -n vm.stats.vm.v_page_count) * $sysctl_pagesize ))
-    mem_wire=$(( $(sysctl -n vm.stats.vm.v_wire_count) * $sysctl_pagesize ))
-    mem_active=$(( $(sysctl -n vm.stats.vm.v_active_count) * $sysctl_pagesize ))
-    mem_inactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize ))
-    mem_cache=$(( $(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize ))
-    mem_free=$(( $(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize ))
-    mem_gap_vm=$(( $mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free ) ))
-    mem_gap_sys=$(( $mem_phys - $mem_all ))
-    mem_gap_hw=$(( $mem_hw - $mem_phys ))
-    mem_total=$mem_hw
-    mem_avail=$(( $mem_inactive + $mem_cache + $mem_free ))
-    mem_used=$(( $mem_total - $mem_avail ))
+    sysctl_pagesize="$(sysctl -n hw.pagesize)"
+    mem_phys="$(sysctl -n hw.physmem)"
+    mem_hw="$(mem_rounded $mem_phys)"
+    mem_all="$(( $(sysctl -n vm.stats.vm.v_page_count) * $sysctl_pagesize ))"
+    mem_wire="$(( $(sysctl -n vm.stats.vm.v_wire_count) * $sysctl_pagesize ))"
+    mem_active="$(( $(sysctl -n vm.stats.vm.v_active_count) * $sysctl_pagesize ))"
+    mem_inactive="$(( $(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize ))"
+    mem_cache="$(( $(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize ))"
+    mem_free="$(( $(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize ))"
+    mem_gap_vm="$(( $mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free ) ))"
+    mem_gap_sys="$(( $mem_phys - $mem_all ))"
+    mem_gap_hw="$(( $mem_hw - $mem_phys ))"
+    mem_total="$mem_hw"
+    mem_avail="$(( $mem_inactive + $mem_cache + $mem_free ))"
+    mem_used="$(( $mem_total - $mem_avail ))"
     if [ ! -z ${MOD_MEMORY_FREEBSD_VERBOSE+x} ]; then
         printf "Wired:                    %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
         printf "Active:                  +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
@@ -63,8 +61,7 @@ ram_FreeBSD () {
         printf "__________________________________________________\n"
         printf "Mem. installed           =%12d (%7dMB) %s\n\n" $mem_hw $(( $mem_hw / ( 1024 * 1024) ))
     fi
-
-    percentage=$(( $mem_used * 100 / $mem_total ))
+    percentage="$(( $mem_used * 100 / $mem_total ))"
     label="$(print_split $WIDTH "RAM - $(( $mem_used / ( 1024 * 1024 ) ))MB used, $(( $mem_avail / ( 1024 * 1024 ) ))MB available" "/ $(( $mem_total / ( 1024 * 1024 ) ))MB")"
     bar="$(print_bar $WIDTH $percentage)"
     echo "$label\n$bar"
