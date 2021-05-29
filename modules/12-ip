@@ -4,22 +4,24 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_IP_RUN" = "true" ]; then
-    exit 0
-fi
+[[ -z "${MOD_IP_RUN+x}" ]] && exit 0
+[[ ! "$MOD_IP_RUN" = "true" ]] && exit 0
 
-get_os
-if [ "$os" == "FreeBSD" ]; then
-    ips_v4="$(ifconfig | grep -e 'inet .*broadcast' | cut -d ' ' -f '2')"
-elif [ "$os" == "Linux" ]; then
-    ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
-elif [ "$os" == "SunOS" ]; then
-    ips_v4="$(ifconfig | grep -e 'inet .*broadcast' | cut -d ' ' -f '2')"
-fi
+case $os in
+    Linux*)
+        ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
+    ;;
 
-# ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
+    FreeBSD)
+        ips_v4="$(ifconfig | awk '/inet/ && /broadcast/ {split($2, arr, /\//); print arr[1]}')"
+    ;;
+
+    SunOS)
+        ips_v4="$(ifconfig | awk '/inet/ && /broadcast/ {split($2, arr, /\//); print arr[1]}')"
+    ;;
+esac
+
 IFS=$'\n' read -r -a ips <<< $ips_v4
+out="$(print_wrap $WIDTH "${ips[@]}")"
 
-text="$(print_wrap $WIDTH "${ips[@]}")"
-
-print_columns "IP addresses" "$text"
+print_columns "IP addresses" "$out"

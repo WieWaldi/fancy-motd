@@ -4,11 +4,11 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_USER_RUN" = "true" ]; then
-    exit 0
-fi
+[[ -z "{$MOD_USER_RUN+x}" ]] && exit 0
+[[ ! "$MOD_USER_RUN" = "true" ]] && exit 0
 
 user=${USER:-$(id -un)}
 hostname=${HOSTNAME:-$(hostname)}
+out="${user}@${hostname}"
 
-print_columns "Logged as" "$user@$hostname"
+print_columns "Logged as" "$out"

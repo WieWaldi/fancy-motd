@@ -4,34 +4,33 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_LOAD_RUN" = "true" ]; then
-    exit 0
-fi
+[[ -z "${MOD_LOAD_RUN+x}" ]] && exit 0
+[[ ! "$MOD_LOAD_RUN" = "true" ]] && exit 0
 
-get_os
-if [ "$os" == "FreeBSD" ]; then
-    ftext="load averages:"
-    nproc="$(sysctl -n hw.ncpu)"
-elif [ "$os" == "Linux" ]; then
-    ftext="load average:"
-    nproc="$(nproc)"
-elif [ "$os" == "SunOS" ]; then
-    ftext="load average:"
-    nproc="$(psrinfo -p)"
-fi
+case $os in
+    Linux*)
+        ftext="load average:"
+        nproc="$(nproc)"
+    ;;
 
+    FreeBSD)
+        ftext="load averages:"
+        nproc="$(sysctl -n hw.ncpu)"
+    ;;
 
+    SunOS)
+        ftext="load average:"
+        nproc="$(psrinfo -p)"
+    ;;
+esac
 
-
-# loads="$(cat /proc/loadavg | cut -d ' ' -f '1,2,3')"
 loads="$(uptime | awk -F "$ftext" '{print $2}' | cut -d ',' -f '1,2,3' | sed 's/,//g; s/^ //g')"
-# nproc=$(nproc)
 warning_threshold=$(bc -l <<< "$nproc * 0.9")
 error_threshold=$(bc -l <<< "$nproc * 1.5")
 
-text=""
+out=""
 for load in $loads; do
-    text+="$(print_color $load $load $warning_threshold $error_threshold), "
+    out+="$(print_color $load $load $warning_threshold $error_threshold), "
 done
 
-print_columns "Load average" "${text::-2}"
+print_columns "Load average" "${out::-2}"

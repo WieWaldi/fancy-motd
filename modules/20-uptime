@@ -4,21 +4,19 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_UPTIME_RUN" = "true" ]; then
-    exit 0
-fi
+[[ -z "{$MOD_UPTIME_RUN+x}" ]] && exit 0
+[[ ! "$MOD_UPTIME_RUN" = "true" ]] && exit 0
 
-get_os
 case $os in
     Linux*)
         IFS=. read -r s _ < /proc/uptime
     ;;
 
     FreeBSD)
-        s=$(sysctl -n kern.boottime)
-        s=${s#*=}
-        s=${s%,*}
-        s=$(($(date +%s) - s))
+        s="$(sysctl -n kern.boottime)"
+        s="${s#*=}"
+        s="${s%,*}"
+        s="$(($(date +%s) - s))"
     ;;
 
     SunOS)
@@ -29,8 +27,9 @@ EOF
 esac
 
 # Get days, hours and minutes.
-d=$((s / 60 / 60 / 24))
-h=$((s / 60 / 60 % 24))
-m=$((s / 60 % 60))
+d="$((s / 60 / 60 / 24))"
+h="$((s / 60 / 60 % 24))"
+m="$((s / 60 % 60))"
+out="${d}d ${h}h ${m}m"
 
-print_columns "Uptime" "${d}d ${h}h ${m}m"
+print_columns "Uptime" "$out"

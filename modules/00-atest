@@ -1,16 +1,26 @@
 #!/usr/bin/env bash
 
 #======== ATEST: Template and Test Script =====================================
+# The sole purpose of this module is to have one for tinkering around.
+# This module is disabled by default through config.sh.
+
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
-get_os
 
 # Check if module is enabled
-if [ ! "$MOD_ATEST_RUN" = "true" ]; then
-    exit 0
-fi
+[[ -z "${MOD_ATEST_RUN+x}" ]] && exit 0
+[[ ! "$MOD_ATEST_RUN" = "true" ]] && exit 0
 
-print_columns "ATEST" "I'm alive"
-print_columns "OS" "${os}"
-print_columns "Kernel" "${kernel}"
-print_columns "Arch" "${arch}"
+# Function to fabricate some output.
+atest () {
+    printf "OS:     $os\n"
+    printf "Kernel: $kernel\n"
+    printf "Arch:   $arch\n"
+    printf "Distr:  $PRETTY_NAME\n"
+}
+
+# Call function atest and put output into variable.
+out="$(atest)"
+
+# Call function "print_columns" from framewark.sh.
+print_columns "ATEST" "$out"

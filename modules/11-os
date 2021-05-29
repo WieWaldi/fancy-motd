@@ -4,12 +4,18 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_OS_RUN" = "true" ]; then
-    exit 0
+[[ -z "{$MOD_OS_RUN+x}" ]] && exit 0
+[[ ! "$MOD_OS_RUN" = "true" ]] && exit 0
+
+# Check for mode, if not set then set it to false
+if [ -z "${MOD_OS_VERBOSE+x}" ]; then
+    MOD_OS_VERBOSE="false"
 fi
 
-get_os
+if [ "$MOD_OS_VERBOSE" = "true" ]; then
+    out="$(printf "${os}\n${kernel}\n${arch}\n${PRETTY_NAME}")"
+else
+    out="$os"
+fi
 
-# source "/etc/os-release"
-
-print_columns "OS" "$os $arch"
+print_columns "OS" "$out"

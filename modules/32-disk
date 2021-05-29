@@ -4,14 +4,13 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_DISK_RUN" = "true" ]; then
-    exit 0
-fi
+[[ -z "${MOD_DISK_RUN+x}" ]] && exit 0
+[[ ! "$MOD_DISK_RUN" = "true" ]] && exit 0
 
 disks=($(df | grep '^/dev' | cut -d' ' -f1 ))
 all_disks_stats="$(df -h)"
 
-text=""
+out=""
 for disk in "${disks[@]}"; do
     grep -q "$disk\s" <<< $all_disks_stats || continue
 
@@ -26,7 +25,7 @@ for disk in "${disks[@]}"; do
     left_label="$device ($mountpoint) - $used used, $free free"
 
     label="$(print_split $WIDTH "$left_label" "$right_label")"
-    text+="$label\n$(print_bar $WIDTH ${percentage::-1})\n"
+    out+="$label\n$(print_bar $WIDTH ${percentage::-1})\n"
 done
 
-print_columns "Disk space" "${text::-2}"
+print_columns "Disk space" "${out::-2}"

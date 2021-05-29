@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-if [ ! "$MOD_MEMORY_RUN" = "true" ]; then
-    exit 0
+[[ -z "${MOD_MEMORY_RUN+x}" ]] && exit 0
+[[ ! "$MOD_MEMORY_RUN" = "true" ]] && exit 0
+
+# Check if mode is set, if not then set it to false
+if [ -z "${MOD_MEMORY_FREEBSD_VERBOSE+x}" ]; then
+    MOD_MEMORY_FREEBSD_VERBOSE="false"
 fi
 
 mem_rounded () {
@@ -105,7 +110,6 @@ swap_SunOS () {
     echo "This is not working yet."
 }
 
-get_os
 case $os in
     Linux*)
         freeh="$(free -h)"
