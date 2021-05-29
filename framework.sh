@@ -1,5 +1,4 @@
-# Source the config
-source "$CONFIG_PATH"
+#!/usr/bin/env bash
 
 # Provide default values for obligatory settings
 # Colors
@@ -9,15 +8,11 @@ CW="${CW:-\e[33m}"  # Warning
 CE="${CE:-\e[31m}"  # Error
 CN="${CN:-\e[0m}"   # None
 
+# Source the config
+source "$CONFIG_PATH"
+
 # Max width used for components in second column
 WIDTH="${WIDTH:-50}"
-
-get_os () {
-    read -r os kernel arch <<-EOF
-        $(uname -srm)
-EOF
-}
-
 
 # Prints given blocks of text side by side
 # $1 - left column
