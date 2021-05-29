@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+source "$BASE_DIR/framework.sh"
+
+# Check if module is enabled
+[[ -z "${MOD_WEATHER_RUN+x}" ]] && exit 0
+[[ ! "$MOD_WEATHER_RUN" = "true" ]] && exit 0
+
+# Check if location is set. If not then use "Berlin" as location.
+if [ -z "${MOD_WEATHER_LOCATION+x}" ]; then
+    MOD_WEATHER_LOCATION="Berlin"
+fi
+
+out="$(curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?0Q)"
+
+print_columns "Current Weather" "$out"
