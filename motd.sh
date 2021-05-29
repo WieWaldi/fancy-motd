@@ -23,6 +23,13 @@ if [ ! -f "$CONFIG_PATH" ]; then
     exit 1
 fi
 
+# Get OS information here instead of calling uname several times.
+read -r os kernel arch <<-EOF
+    $(uname -srm)
+EOF
+[[ -f "/etc/os-release" ]] && source /etc/os-release
+export PRETTY_NAME os kernel arch
+
 # Source the framework
 source "$BASE_DIR/framework.sh"
 
@@ -30,7 +37,8 @@ source "$BASE_DIR/framework.sh"
 output=""
 modules="$(ls -1 "$BASE_DIR/modules" | perl -nle 'print if m{^(?<!\d)\d{2}(?!\d)-}')"
 while read -r module; do
-    module_output="$($BASE_DIR/modules/$module 2>/dev/null)"
+    # module_output="$($BASE_DIR/modules/$module 2>/dev/null)"
+    module_output="$($BASE_DIR/modules/$module)"
     [ $? -ne 0 ] && continue
     output+="$module_output"
     [ -n "$module_output" ] && output+=$'\n'
