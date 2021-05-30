@@ -4,8 +4,8 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-[[ -z "${MOD_SERVICES_LINUX_RUN+x}" ]] && exit 0
-[[ ! "$MOD_SERVICES_LINUX_RUN" = "true" ]] && exit 0
+[[ -z "${MOD_SERVICES_RUN+x}" ]] && exit 0
+[[ ! "$MOD_SERVICES_RUN" = "true" ]] && exit 0
 
 statuses=()
 for key in "${!services[@]}"; do

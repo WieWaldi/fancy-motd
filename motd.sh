@@ -37,7 +37,6 @@ source "$BASE_DIR/framework.sh"
 output=""
 modules="$(ls -1 "$BASE_DIR/modules" | perl -nle 'print if m{^(?<!\d)\d{2}(?!\d)-}')"
 while read -r module; do
-    # module_output="$($BASE_DIR/modules/$module 2>/dev/null)"
     module_output="$($BASE_DIR/modules/$module)"
     [ $? -ne 0 ] && continue
     output+="$module_output"

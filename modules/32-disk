@@ -7,7 +7,7 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_DISK_RUN+x}" ]] && exit 0
 [[ ! "$MOD_DISK_RUN" = "true" ]] && exit 0
 
-disks=($(df | grep '^/dev' | cut -d' ' -f1 ))
+disks=($(df | grep '^/dev\|//' | cut -d' ' -f1 ))
 all_disks_stats="$(df -h)"
 
 out=""
@@ -17,7 +17,7 @@ for disk in "${disks[@]}"; do
     stats="$(awk -v pat="$disk" '$0~pat {print $2,$3,$4,$5,$6}' <<< $all_disks_stats)"
     IFS=" " read -r total used free percentage mountpoint <<< $stats
 
-    device=($(echo $disk | sed 's/\/dev//g;s/\/mapper//g;s/^.\{1\}//'))
+    device=($(echo $disk | sed -r 's/\/dev//g;s/\/mapper//g;s/^\/\/(.*)\///g;s/^.\{1\}//'))
     left_label="$device () - $used used, $free free"
     right_label="/ $total"
     free_width=$(( $WIDTH - ${#left_label} - ${#right_label} - 1 ))
