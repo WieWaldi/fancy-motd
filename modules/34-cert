@@ -9,15 +9,17 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_CERT_RUN+x}" ]] && exit 0
 [[ ! "$MOD_CERT_RUN" = "true" ]] && exit 0
 
-out=""
+# Make sure that FreeBSD is using GNU date
+date="date"
+[[ "$os" = "FreeBSD" ]] && date="gdate"
 
 cert_validity () {
-    currentTime=$(date +%s)
+    currentTime=$(${date} +%s)
     for sslcheck in ${!certhostlist[@]}; do
         IFS=";" read -r shortname fqdn port <<< ${certhostlist[$sslcheck]}
         certTime=$(openssl s_client -servername ${fqdn} -connect ${fqdn}:${port} < /dev/null 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
-        certLineTime=$(date -d "${certTime}" +"%a %b %d %Y")
-        certTimestamp=$(date -d "${certTime}" +%s)
+        certLineTime=$(${date} -d "${certTime}" +"%a %b %d %Y")
+        certTimestamp=$(${date} -d "${certTime}" +%s)
         if [ "${certTimestamp}" -ge "${currentTime}" ]; then
             sign="${CO}●${CN}"
         else
