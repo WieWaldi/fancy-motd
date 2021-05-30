@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 #======== General Config ======================================================
 # Colors
 CA="\e[34m"									# Accent
@@ -10,53 +11,72 @@ CN="\e[0m"									# None
 # Max width used for components in second column
 WIDTH=50
 
-#======== Module Config: ATEST ================================================
-# MOD_ATEST_RUN="true"						# Comment to disable module
+#======== MODULES =============================================================
 
-#======== Module Config: BANNER ===============================================
-MOD_BANNER_RUN="true"						# Comment to disable module
-MOD_BANNER_PRINT="HOSTNAME"					# Comment to print FQDN
-MOD_BANNER_FONT="smslant.flf"				# Specify figlet font to use
+# ATEST
+MOD_ATEST_RUN="false"
 
-#======== Module Config: USER =================================================
-MOD_USER_RUN="true"							# Comment to disable module
+# BANNER
+MOD_BANNER_RUN="true"
+MOD_BANNER_PRINT="HOSTNAME"
+MOD_BANNER_FONT="smslant.flf"
 
-#======== Module Config: OS ===================================================
-MOD_OS_RUN="true"							# Comment to disable module
+# USER
+MOD_USER_RUN="true"
 
-#======== Module Config: IP ===================================================
-MOD_IP_RUN="true"							# Comment to disable module
+# OS
+MOD_OS_RUN="true"
+MOD_OS_VERBOSE="true"
 
-#======== Module Config: PUBLIC-IP ============================================
-MOD_PUBLIC_IP_RUN="true"					# Comment to disable module
+# IP
+MOD_IP_RUN="true"
 
-#======== Module Config: UPTIME ===============================================
-MOD_UPTIME_RUN="true"						# Comment to disable module
+# PUBLIC-IP
+MOD_PUBLIC_IP_RUN="true"
 
-#======== Module Config: LOAD =================================================
-MOD_LOAD_RUN="true"							# Comment to disable module
+# UPTIME
+MOD_UPTIME_RUN="true"
 
-#======== Module Config: MEMORY ===============================================
-MOD_MEMORY_RUN="true"						# Comment to disable module
-MOD_MEMORY_FREEBSD_VERBOSE="true"			# Comment to disable module
+# LOAD
+MOD_LOAD_RUN="true"
 
-#======== Module Config: DISK =================================================
-MOD_DISK_RUN="true"							# Comment to disable module
+# MEMORY
+MOD_MEMORY_RUN="true"
+MOD_MEMORY_FREEBSD_VERBOSE="true"
 
-#======== Module Config: SERVICES-LINUX  ======================================
-MOD_SERVICES_LINUX_RUN="true"				# Comment to disable module
-declare -A services                         # List of services to check
+# DISK
+MOD_DISK_RUN="true"
+
+# SERVICES
+MOD_SERVICES_RUN="true"
+# List of services to check
+declare -A services
 services["nginx"]="nginx"
 services["Docker"]="docker"
 services["SSH"]="sshd"
 services["Fail2Ban"]="fail2ban"
 services["UFW"]="ufw"
 
-#======== Module Config: TMUX =================================================
-MOD_TMUX_RUN="true"							# Comment to disable module
+# CERTIFICATE VALIDITY
+MOD_CERT_RUN="true"
+# Short Name; FQDN; TCP Port
+declare -A certhostlist
+certhostlist[1]="FreeBSD WWW;www.freebsd.org;443"
+certhostlist[2]="Google WWW;www.google.de;443"
+certhostlist[3]="Google IMAP;imap.google.de;993"
+certhostlist[4]="Google SMTP;smtp.gmail.de;465"
 
-#======== Module Config: UPDATES===============================================
-MOD_UPDATES_RUN="true"						# Comment to disable module
+# TMUX
+MOD_TMUX_RUN="true"
 
-#======== Module Config: QUOTE ================================================
-MOD_QUOTE_RUN="true"						# Comment to disable module
+# UPDATES
+MOD_UPDATES_RUN="true"
+
+# QUOTE
+MOD_QUOTE_RUN="true"
+
+# WEATHER
+MOD_WEATHER_RUN="true"
+MOD_WEATHER_LOCATION="Fuerstenfeldbruck"
+MOD_WEATHER_STYLE="small"
+MOD_WEATHER_OPTIONS="%c%t+(%f)+%h+%w+%P+%m"
