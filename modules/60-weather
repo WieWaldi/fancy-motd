@@ -4,14 +4,22 @@ set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-[[ -z "${MOD_WEATHER_RUN+x}" ]] && exit 0
+# [[ -z "${MOD_WEATHER_RUN+x}" ]] && exit 0
 [[ ! "$MOD_WEATHER_RUN" = "true" ]] && exit 0
 
 # Check if location is set. If not then use "Berlin" as location.
-if [ -z "${MOD_WEATHER_LOCATION+x}" ]; then
-    MOD_WEATHER_LOCATION="Berlin"
-fi
+[[ -z "${MOD_WEATHER_LOCATION+x}" ]] && MOD_WEATHER_LOCATION="Berlin"
+[[ -z "${MOD_WEATHER_STYLE+x}" ]] && MOD_WEATHER_STYLE="small"
+[[ -z "${MOD_WEATHER_OPTIONS+x}" ]] && MOD_WEATHER_OPTIONS="%c%t+(%f)+%h+%w+%P+%m"
 
-out="$(curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?0Q)"
 
+get_Weather () {
+    if [[ "$MOD_WEATHER_STYLE" = "small" ]]; then 
+        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?format="${MOD_WEATHER_OPTIONS}"
+    else
+        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?0Q
+    fi
+}
+
+out=$(get_Weather)
 print_columns "Current Weather" "$out"
