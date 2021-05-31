@@ -22,6 +22,12 @@ get_os () {
 EOF
     [[ -f "/etc/os-release" ]] && source /etc/os-release
     export PRETTY_NAME os kernel arch
+
+    # Are we all set?
+    PRETTY_NAME="${PRETTY_NAME:="Unkown"}"
+    os="${os:="Unkown"}"
+    kernel="${kernel:="Unkown"}"
+    arch="${arch:="Unkown"}"
 }
 
 # Prints given blocks of text side by side
