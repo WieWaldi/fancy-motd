@@ -11,6 +11,9 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_ATEST_RUN+x}" ]] && exit 0
 [[ ! "$MOD_ATEST_RUN" = "true" ]] && exit 0
 
+# Are we all set?
+PRETTY_NAME="${PRETTY_NAME:="Unkown"}"
+
 # Function to fabricate some output.
 atest () {
     printf "OS:     $os\n"
