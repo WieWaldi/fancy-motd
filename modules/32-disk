@@ -14,8 +14,8 @@ out=""
 for disk in "${disks[@]}"; do
     grep -q "$disk\s" <<< $all_disks_stats || continue
 
-    stats="$(awk -v pat="$disk" '$0~pat {print $2,$3,$4,$5,$6}' <<< $all_disks_stats)"
-    IFS=" " read -r total used free percentage mountpoint <<< $stats
+    stats="$(awk -v pat="$disk" '$0~pat {print $2,$3,$4,$5,$6}' <<< "$all_disks_stats")"
+    IFS=" " read -r total used free percentage mountpoint <<< "$stats"
 
     device=($(echo $disk | "$sed" -r 's/\/dev//g;s/\/mapper//g;s/^\/\/(.*)\///g;s/^.\{1\}//'))
     left_label="$device () - $used used, $free free"
