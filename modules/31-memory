@@ -15,23 +15,23 @@ fi
 mem_rounded () {
     mem_size=$1
     chip_size=1
-    chip_guess="$(echo "$mem_size / 8 - 1" | bc)"
+    chip_guess="$(echo "$mem_size / 8 - 1" | "$bc")"
     while [ $chip_guess != 0 ]
         do
-                chip_guess="$(echo "$chip_guess / 2" | bc)"
-                chip_size="$(echo "$chip_size * 2" | bc)"
+                chip_guess="$(echo "$chip_guess / 2" | "$bc")"
+                chip_size="$(echo "$chip_size * 2" | "$bc")"
     done
-    mem_round="$(echo "( $mem_size / $chip_size + 1 ) * $chip_size" | bc)"
+    mem_round="$(echo "( $mem_size / $chip_size + 1 ) * $chip_size" | "$bc")"
     echo $mem_round
         exit 0
 }
 
 ram_Linux () {
     local memory total used available label percentage bar
-    memory="$(awk '/Mem/ {print $2,$3,$7}' <<< $freeh)"
+    memory="$("$awk" '/Mem/ {print $2,$3,$7}' <<< $freeh)"
     IFS=" " read -r total used available <<< $memory
     label="$(print_split $WIDTH "RAM - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
-    percentage="$(awk '/Mem/ {printf "%.0f", ($2-$7)/$2*100}' <<< $freem)"
+    percentage="$("$awk" '/Mem/ {printf "%.0f", ($2-$7)/$2*100}' <<< $freem)"
     bar="$(print_bar $WIDTH $percentage)"
     echo "$label\n$bar"
 }
@@ -81,12 +81,12 @@ swap_Linux () {
     local swap total used available label percentage bar
 
     # Return if no swap
-    [ "$(awk '/Swap/ {print $2}' <<< $freem)" -eq 0 ] && return
+    [ "$("$awk" '/Swap/ {print $2}' <<< $freem)" -eq 0 ] && return
 
-    swap="$(awk '/Swap/ {print $2,$3,$4}' <<< $freeh)"
+    swap="$("$awk" '/Swap/ {print $2,$3,$4}' <<< $freeh)"
     IFS=" " read -r total used available <<< $swap
     label="$(print_split $WIDTH "Swap - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
-    percentage="$(awk '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)"
+    percentage="$("$awk" '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)"
     bar="$(print_bar $WIDTH $percentage)"
     echo "$label\n$bar"
 }
@@ -95,7 +95,7 @@ swap_FreeBSD () {
     local total used available label percentage bar
 
     # Return if no swap
-    [ "$(awk '{print $1}' <<< $swapctl)" -eq 0 ] && return
+    [ "$("$awk" '{print $1}' <<< $swapctl)" -eq 0 ] && return
 
     IFS=" " read -r total used <<< $swapctl
     available="$(( $total - $used ))"
@@ -120,7 +120,7 @@ case $os in
     ;;
 
     FreeBSD)
-        swapctl="$(swapctl -ms | awk '/Total/ {print $2,$3}')"
+        swapctl="$(swapctl -ms | "$awk" '/Total/ {print $2,$3}')"
         out="$(ram_FreeBSD)"
         swap="$(swap_FreeBSD)"
         [ -n "$swap" ] && out+="\n$swap"

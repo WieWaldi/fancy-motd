@@ -74,9 +74,9 @@ print_bar() {
 # $4 - error threshold
 print_color() {
     local out=""
-    if (( $(bc -l <<< "$2 < $3") )); then
+    if (( $("$bc" -l <<< "$2 < $3") )); then
         out+="${CO}"
-    elif (( $(bc -l <<< "$2 >= $3 && $2 < $4") )); then
+    elif (( $("$bc" -l <<< "$2 >= $3 && $2 < $4") )); then
         out+="${CW}"
     else
         out+="${CE}"
@@ -157,7 +157,7 @@ print_truncate() {
 # Strips ANSI color codes from given string
 # $1 - text to strip
 strip_ansi() {
-    echo "$(echo -e "$1" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")"
+    echo "$(echo -e "$1" | "$sed" -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")"
 }
 
 # Following is basically simple `column` reimplementation because it doesn't work consistently.

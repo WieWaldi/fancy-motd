@@ -9,15 +9,15 @@ source "$BASE_DIR/framework.sh"
 
 case $os in
     Linux*)
-        ips_v4="$(ip a | awk '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
+        ips_v4="$(ip a | "$awk" '/inet / && /global/ {split($2, arr, /\//); print arr[1]}')"
     ;;
 
     FreeBSD)
-        ips_v4="$(ifconfig | awk '/inet/ && /broadcast/ {split($2, arr, /\//); print arr[1]}')"
+        ips_v4="$(ifconfig | "$awk" '/inet/ && /broadcast/ {split($2, arr, /\//); print arr[1]}')"
     ;;
 
     SunOS)
-        ips_v4="$(ifconfig | awk '/inet/ && /broadcast/ {split($2, arr, /\//); print arr[1]}')"
+        ips_v4="$(ifconfig | "$awk" '/inet/ && /broadcast/ {split($2, arr, /\//); print arr[1]}')"
     ;;
 esac
 

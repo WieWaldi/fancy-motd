@@ -24,9 +24,9 @@ case $os in
     ;;
 esac
 
-loads="$(uptime | awk -F "$ftext" '{print $2}' | cut -d ',' -f '1,2,3' | sed 's/,//g; s/^ //g')"
-warning_threshold=$(bc -l <<< "$nproc * 0.9")
-error_threshold=$(bc -l <<< "$nproc * 1.5")
+loads="$(uptime | "$awk" -F "$ftext" '{print $2}' | cut -d ',' -f '1,2,3' | "$sed" 's/,//g; s/^ //g')"
+warning_threshold=$("$bc" -l <<< "$nproc * 0.9")
+error_threshold=$("$bc" -l <<< "$nproc * 1.5")
 
 out=""
 for load in $loads; do
