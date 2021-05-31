@@ -23,15 +23,11 @@ if [ ! -f "$CONFIG_PATH" ]; then
     exit 1
 fi
 
-# Get OS information here instead of calling uname several times.
-read -r os kernel arch <<-EOF
-    $(uname -srm)
-EOF
-[[ -f "/etc/os-release" ]] && source /etc/os-release
-export PRETTY_NAME os kernel arch
-
 # Source the framework
 source "$BASE_DIR/framework.sh"
+
+# Get OS information here instead of calling uname several times.
+get_os
 
 # Run the modules and collect output
 output=""

@@ -8,11 +8,21 @@ CW="${CW:-\e[33m}"  # Warning
 CE="${CE:-\e[31m}"  # Error
 CN="${CN:-\e[0m}"   # None
 
+# Max width used for components in second column
+WIDTH="${WIDTH:-50}"
+
 # Source the config
 source "$CONFIG_PATH"
 
-# Max width used for components in second column
-WIDTH="${WIDTH:-50}"
+
+# Get some OS information
+get_os () {
+    read -r os kernel arch <<-EOF
+        $(uname -srm)
+EOF
+    [[ -f "/etc/os-release" ]] && source /etc/os-release
+    export PRETTY_NAME os kernel arch
+}
 
 # Prints given blocks of text side by side
 # $1 - left column
