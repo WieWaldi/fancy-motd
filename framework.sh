@@ -165,7 +165,7 @@ columnize() {
         visible_left="$(strip_ansi "$left")"
         left_widths+=(${#visible_left})
         [ ${#visible_left} -gt $max_left_width ] && max_left_width=${#visible_left}
-    done <<< $1
+    done <<< "$1"
 
     # Iterate over lines and print them while padding left column with spaces
     for ((i=0; i<${#left_lines[@]}-1; i++)); do
