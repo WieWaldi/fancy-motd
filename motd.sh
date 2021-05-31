@@ -38,8 +38,8 @@ case $os in
     ;;
 
     FreeBSD)
-    export awk="gawk"
-    export sed="gsed"
+    export awk="awk"
+    export sed="sed"
     export bc="bc"
     ;;
 
