@@ -13,13 +13,18 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_WEATHER_OPTIONS+x}" ]] && MOD_WEATHER_OPTIONS="%c%t+(%f)+%h+%w+%P+%m"
 
 
+#get_Weather () {
+#    if [[ "$MOD_WEATHER_STYLE" = "small" ]]; then 
+#        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?format="${MOD_WEATHER_OPTIONS}"
+#    else
+#        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?0Q
+#    fi
+#}
+
 get_Weather () {
-    if [[ "$MOD_WEATHER_STYLE" = "small" ]]; then 
-        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?format="${MOD_WEATHER_OPTIONS}"
-    else
-        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?0Q
-    fi
+    curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?${MOD_WEATHER_OPTIONS[@]}
 }
+
 
 out=$(get_Weather)
 print_columns "Current Weather" "$out"

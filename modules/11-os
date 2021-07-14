@@ -12,10 +12,13 @@ if [ -z "${MOD_OS_VERBOSE+x}" ]; then
     MOD_OS_VERBOSE="false"
 fi
 
-if [ "$MOD_OS_VERBOSE" = "true" ]; then
-    out="$(printf "${os}\n${kernel}\n${arch}\n${PRETTY_NAME}")"
-else
-    out="$os"
-fi
+os_Info () {
+    if [ "$MOD_OS_VERBOSE" = "true" ]; then
+        print_split "${WIDTH}" "${os} ${kernel}" "${arch}"
+    else
+        echo "$os"
+    fi
+}
 
+out="$(os_Info)"
 print_columns "OS" "$out"
