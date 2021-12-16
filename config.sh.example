@@ -35,6 +35,7 @@ MOD_BANNER_FONT="smslant.flf"
 
 # USER
 MOD_USER_RUN="true"
+MOD_USER_LAST="true"
 
 # OS
 MOD_OS_RUN="true"
