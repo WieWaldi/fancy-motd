@@ -7,6 +7,18 @@ CO="\e[32m"									# Ok
 CW="\e[33m"									# Warning
 CE="\e[31m"									# Error
 CN="\e[0m"									# None
+BARCHARUSED="="
+BARCHARFREE="="
+
+# In case your terminal/window can't handle color sequences you may use the
+# following set up.
+# CA=""
+# CO=""
+# CW=""
+# CE=""
+# CN=""
+# BARCHARUSED=""
+# BARCHARFREE=""
 
 # Max width used for components in second column
 WIDTH=50
