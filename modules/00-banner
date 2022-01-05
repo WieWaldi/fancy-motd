@@ -3,10 +3,23 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
-hostname=${HOSTNAME:-$(hostname)}
+# Check if module is enabled
+[[ -z "{$MOD_BANNER_RUN+x}" ]] && exit 0
+[[ ! "$MOD_BANNER_RUN" = "true" ]] && exit 0
 
-if [ "$BANNER" = "HOSTNAME" ]; then
-    print_columns "" "${CA}$(figlet ${hostname%%.*})${CN}"
-else
-    print_columns "" "${CA}$(figlet $hostname)${CN}"
+# Check if mode and font is set, if not then set default values.
+if [ -z "${MOD_BANNER_PRINT+x}" ]; then
+    MOD_BANNER_PRINT="FQDN"
 fi
+if [ -z "${MOD_BANNER_FONT+x}" ]; then
+    MOD_BANNER_FONT="standard"
+fi
+
+hostname="${HOSTNAME:-$(hostname)}"
+if [ "$MOD_BANNER_PRINT" = "HOSTNAME" ]; then
+    out="${CA}$(figlet -f ${MOD_BANNER_FONT} ${hostname%%.*})${CN}"
+else
+    out="${CA}$(figlet -f ${MOD_BANNER_FONT} $hostname)${CN}"
+fi
+
+print_columns "" "$out"

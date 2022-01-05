@@ -3,6 +3,10 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
-quote="$(fortune -s | fold -sw $WIDTH)"
+# Check if module is enabled
+[[ -z "${MOD_QUOTE_RUN+x}" ]] && exit 0
+[[ ! "$MOD_QUOTE_RUN" = "true" ]] && exit 0
 
-print_columns "Quote" "$quote"
+out="$(fortune -s all | fold -sw $WIDTH)"
+
+print_columns "Quote" "$out"

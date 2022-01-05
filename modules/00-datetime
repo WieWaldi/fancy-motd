@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+#======== ATEST: Template and Test Script =====================================
+# The sole purpose of this module is to have one for tinkering around.
+# This module is disabled by default through config.sh.
+
+set -euo pipefail
+source "$BASE_DIR/framework.sh"
+
+# Check if module is enabled
+[[ -z "${MOD_DATETIME_RUN+x}" ]] && exit 0
+[[ ! "$MOD_DATETIME_RUN" = "true" ]] && exit 0
+
+get_DateTime () {
+    figlet -f big -w ${WIDTH} -c $(date "+%H:%M")
+    figlet -f small -w ${WIDTH} -c $(date "+%d.%m.%Y")
+}
+
+
+# Call function atest and put output into variable.
+out="$(get_DateTime)"
+
+# Call function "print_columns" from framewark.sh.
+print_columns "Time" "$out"

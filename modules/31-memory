@@ -3,39 +3,134 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
-freeh="$(free -h)"
-freem="$(free -m)"
+# Check if module is enabled
+[[ -z "${MOD_MEMORY_RUN+x}" ]] && exit 0
+[[ ! "$MOD_MEMORY_RUN" = "true" ]] && exit 0
 
-ram() {
+# Check if mode is set, if not then set it to false
+if [ -z "${MOD_MEMORY_FREEBSD_VERBOSE+x}" ]; then
+    MOD_MEMORY_FREEBSD_VERBOSE="false"
+fi
+
+mem_rounded () {
+    mem_size=$1
+    chip_size=1
+    chip_guess="$(echo "$mem_size / 8 - 1" | "$bc")"
+    while [ $chip_guess != 0 ]
+        do
+                chip_guess="$(echo "$chip_guess / 2" | "$bc")"
+                chip_size="$(echo "$chip_size * 2" | "$bc")"
+    done
+    mem_round="$(echo "( $mem_size / $chip_size + 1 ) * $chip_size" | "$bc")"
+    echo $mem_round
+        exit 0
+}
+
+ram_Linux () {
     local memory total used available label percentage bar
-    memory="$(awk '/Mem/ {print $2,$3,$7}' <<< $freeh)"
+    memory="$("$awk" '/Mem/ {print $2,$3,$7}' <<< $freeh)"
     IFS=" " read -r total used available <<< $memory
     label="$(print_split $WIDTH "RAM - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
-
-    percentage=$(awk '/Mem/ {printf "%.0f", ($2-$7)/$2*100}' <<< $freem)
+    percentage="$("$awk" '/Mem/ {printf "%.0f", ($2-$7)/$2*100}' <<< $freem)"
     bar="$(print_bar $WIDTH $percentage)"
-
     echo "$label\n$bar"
 }
 
-swap() {
+ram_FreeBSD () {
+    local mem_phys mem_hw mem_all mem_wire mem_active mem_inactive mem_cache mem_free mem_gap_vm mem_gap_sys mem_gap_hw mem_total mem_avail mem_used label percentage bar
+    sysctl_pagesize="$(sysctl -n hw.pagesize)"
+    mem_phys="$(sysctl -n hw.physmem)"
+    mem_hw="$(mem_rounded $mem_phys)"
+    mem_all="$(( $(sysctl -n vm.stats.vm.v_page_count) * $sysctl_pagesize ))"
+    mem_wire="$(( $(sysctl -n vm.stats.vm.v_wire_count) * $sysctl_pagesize ))"
+    mem_active="$(( $(sysctl -n vm.stats.vm.v_active_count) * $sysctl_pagesize ))"
+    mem_inactive="$(( $(sysctl -n vm.stats.vm.v_inactive_count) * $sysctl_pagesize ))"
+    mem_cache="$(( $(sysctl -n vm.stats.vm.v_cache_count) * $sysctl_pagesize ))"
+    mem_free="$(( $(sysctl -n vm.stats.vm.v_free_count) * $sysctl_pagesize ))"
+    mem_gap_vm="$(( $mem_all - ( $mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free ) ))"
+    mem_gap_sys="$(( $mem_phys - $mem_all ))"
+    mem_gap_hw="$(( $mem_hw - $mem_phys ))"
+    mem_total="$mem_hw"
+    mem_avail="$(( $mem_inactive + $mem_cache + $mem_free ))"
+    mem_used="$(( $mem_total - $mem_avail ))"
+    if [ ! -z ${MOD_MEMORY_FREEBSD_VERBOSE+x} ]; then
+        printf "Wired:                    %12d (%7dMB) %s\n" $mem_wire $(( $mem_wire / ( 1024 * 1024) ))
+        printf "Active:                  +%12d (%7dMB) %s\n" $mem_active $(( $mem_active / ( 1024 * 1024) ))
+        printf "Inactive:                +%12d (%7dMB) %s\n" $mem_inactive $(( $mem_inactive / ( 1024 * 1024) ))
+        printf "Cache                    +%12d (%7dMB) %s\n" $mem_cache $(( $mem_cache / ( 1024 * 1024) ))
+        printf "Free                     +%12d (%7dMB) %s\n" $mem_free $(( $mem_free / ( 1024 * 1024) ))
+        printf "Gap (Unknown)            +%12d (%7dMB) %s\n" $mem_gap_vm $(( $mem_gap_vm / ( 1024 * 1024) ))
+        printf "__________________________________________________\n"
+        printf "Total managed            =%12d (%7dMB) %s\n" $mem_all $(( $mem_all / ( 1024 * 1024) ))
+        printf "Gap (Kernel)             +%12d (%7dMB) %s\n" $mem_gap_sys $(( $mem_gap_sys / ( 1024 * 1024) ))
+        printf "__________________________________________________\n"
+        printf "Mem. installed           =%12d (%7dMB) %s\n\n" $mem_hw $(( $mem_hw / ( 1024 * 1024) ))
+    fi
+    percentage="$(( $mem_used * 100 / $mem_total ))"
+    label="$(print_split $WIDTH "RAM - $(( $mem_used / ( 1024 * 1024 ) ))MB used, $(( $mem_avail / ( 1024 * 1024 ) ))MB available" "/ $(( $mem_total / ( 1024 * 1024 ) ))MB")"
+    bar="$(print_bar $WIDTH $percentage)"
+    echo "$label\n$bar"
+}
+
+ram_SunOS () {
+    local memory total used available label percentage bar
+    echo "This is not working yet."
+}
+
+swap_Linux () {
     local swap total used available label percentage bar
 
     # Return if no swap
-    [ "$(awk '/Swap/ {print $2}' <<< $freem)" -eq 0 ] && return
+    [ "$("$awk" '/Swap/ {print $2}' <<< $freem)" -eq 0 ] && return
 
-    swap="$(awk '/Swap/ {print $2,$3,$4}' <<< $freeh)"
+    swap="$("$awk" '/Swap/ {print $2,$3,$4}' <<< $freeh)"
     IFS=" " read -r total used available <<< $swap
     label="$(print_split $WIDTH "Swap - ${used::-1} used, ${available::-1} available" "/ ${total::-1}")"
-
-    percentage=$(awk '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)
+    percentage="$("$awk" '/Swap/ {printf "%.0f", $3/$2*100}' <<< $freem)"
     bar="$(print_bar $WIDTH $percentage)"
-
     echo "$label\n$bar"
 }
 
-out="$(ram)"
-swap="$(swap)"
-[ -n "$swap" ] && out+="\n$swap"
+swap_FreeBSD () {
+    local total used available label percentage bar
+
+    # Return if no swap
+    [ "$("$awk" '{print $1}' <<< $swapctl)" -eq 0 ] && return
+
+    IFS=" " read -r total used <<< $swapctl
+    available="$(( $total - $used ))"
+    label="$(print_split $WIDTH "Swap - ${used}MB used, ${available}MB available" "/ ${total}MB")"
+    percentage="$(( $used * 100 / $total ))"
+    bar="$(print_bar $WIDTH $percentage)"
+    echo "$label\n$bar"
+}
+
+swap_SunOS () {
+    local swap total used available label percentage bar
+    echo "This is not working yet."
+}
+
+case $os in
+    Linux*)
+        freeh="$(free -h)"
+        freem="$(free -m)"
+        out="$(ram_Linux)"
+        swap="$(swap_Linux)"
+        [ -n "$swap" ] && out+="\n$swap"
+    ;;
+
+    FreeBSD)
+        swapctl="$(swapctl -ms | "$awk" '/Total/ {print $2,$3}')"
+        out="$(ram_FreeBSD)"
+        swap="$(swap_FreeBSD)"
+        [ -n "$swap" ] && out+="\n$swap"
+    ;;
+
+    SunOS)
+        out="$(ram_SunOS)"
+        swap="$(swap_SunOS)"
+        [ -n "$swap" ] && out+="\n$swap"
+    ;;
+esac
 
 print_columns "Memory" "$out"

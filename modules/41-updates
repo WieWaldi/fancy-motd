@@ -3,6 +3,10 @@
 set -eu
 source "$BASE_DIR/framework.sh"
 
+# Check if module is enabled
+[[ -z "${MOD_UPDATES_RUN+x}" ]] && exit 00
+[[ ! "$MOD_UPDATES_RUN" = "true" ]] && exit 00
+
 if type checkupdates >/dev/null 2>&1; then
     updates=$(checkupdates 2> /dev/null | wc -l )
     if type yay >/dev/null 2>&1; then
@@ -17,6 +21,6 @@ else
     updates="N/A"
 fi
 
-text="$(print_color "$updates available" $updates 1 50)"
+out="$(print_color "$updates available" $updates 1 50)"
 
-print_columns "Updates" "$text"
+print_columns "Updates" "$out"

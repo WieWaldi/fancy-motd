@@ -1,5 +1,4 @@
-# Source the config
-source "$CONFIG_PATH"
+#!/usr/bin/env bash
 
 # Provide default values for obligatory settings
 # Colors
@@ -11,6 +10,25 @@ CN="${CN:-\e[0m}"   # None
 
 # Max width used for components in second column
 WIDTH="${WIDTH:-50}"
+
+# Source the config
+source "$CONFIG_PATH"
+
+
+# Get some OS information
+get_os () {
+    read -r os kernel arch <<-EOF
+        $(uname -srm)
+EOF
+    [[ -f "/etc/os-release" ]] && source /etc/os-release
+    export PRETTY_NAME os kernel arch
+
+    # Are we all set?
+    PRETTY_NAME="${PRETTY_NAME:="Unkown"}"
+    os="${os:="Unkown"}"
+    kernel="${kernel:="Unkown"}"
+    arch="${arch:="Unkown"}"
+}
 
 # Prints given blocks of text side by side
 # $1 - left column
@@ -41,9 +59,11 @@ print_bar() {
     local out=""
     out+="["
     out+="${CE}"
-    out+=$(print_n "=" $used_width)
+    # out+=$(print_n "=" $used_width)
+    out+=$( print_n ${BARCHARUSED} ${used_width} )
     out+="${CO}"
-    out+=$(print_n "=" $free_width)
+    # out+=$(print_n "=" $free_width)
+    out+=$( print_n ${BARCHARFREE} ${free_width} )
     out+="${CN}"
     out+="]"
     echo "$out"
@@ -56,9 +76,9 @@ print_bar() {
 # $4 - error threshold
 print_color() {
     local out=""
-    if (( $(bc -l <<< "$2 < $3") )); then
+    if (( $("$bc" -l <<< "$2 < $3") )); then
         out+="${CO}"
-    elif (( $(bc -l <<< "$2 >= $3 && $2 < $4") )); then
+    elif (( $("$bc" -l <<< "$2 >= $3 && $2 < $4") )); then
         out+="${CW}"
     else
         out+="${CE}"
@@ -150,7 +170,7 @@ print_truncate() {
 # Strips ANSI color codes from given string
 # $1 - text to strip
 strip_ansi() {
-    echo "$(echo -e "$1" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")"
+    echo "$(echo -e "$1" | "$sed" -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")"
 }
 
 # Following is basically simple `column` reimplementation because it doesn't work consistently.
@@ -174,7 +194,7 @@ columnize() {
         visible_left="$(strip_ansi "$left")"
         left_widths+=(${#visible_left})
         [ ${#visible_left} -gt $max_left_width ] && max_left_width=${#visible_left}
-    done <<< $1
+    done <<< "$1"
 
     # Iterate over lines and print them while padding left column with spaces
     for ((i=0; i<${#left_lines[@]}-1; i++)); do

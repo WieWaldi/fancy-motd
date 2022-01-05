@@ -3,25 +3,29 @@
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
-disks=($(df | grep '^/dev' | cut -d' ' -f1 | sort -u))
+# Check if module is enabled
+[[ -z "${MOD_DISK_RUN+x}" ]] && exit 0
+[[ ! "$MOD_DISK_RUN" = "true" ]] && exit 0
+
+disks=($(df | grep '^/dev\|//' | cut -d' ' -f1 ))
 all_disks_stats="$(df -h)"
 
-text=""
+out=""
 for disk in "${disks[@]}"; do
     grep -q "$disk\s" <<< $all_disks_stats || continue
 
-    stats="$(awk -v pat="$disk" '$0~pat {print $2,$3,$4,$5,$6}' <<< $all_disks_stats)"
-    IFS=" " read -r total used free percentage mountpoint <<< $stats
+    stats="$(awk -v pat="$disk" '$0~pat {print $2,$3,$4,$5,$6}' <<< "$all_disks_stats")"
+    IFS=" " read -r total used free percentage mountpoint <<< "$stats"
 
-    device="$(sed 's/\/dev//g;s/\/mapper//g;s/^.\{1\}//' <<< $disk)"
+    device=($(echo $disk | "$sed" -r 's/\/dev//g;s/\/mapper//g;s/^\/\/(.*)\///g;s/^.\{1\}//'))
     left_label="$device () - $used used, $free free"
     right_label="/ $total"
     free_width=$(( $WIDTH - ${#left_label} - ${#right_label} - 1 ))
-    mountpoint="$(print_truncate "$mountpoint" $free_width "start")"
+    mountpoint=$(print_truncate "$mountpoint" $free_width "start")
     left_label="$device ($mountpoint) - $used used, $free free"
 
     label="$(print_split $WIDTH "$left_label" "$right_label")"
-    text+="$label\n$(print_bar $WIDTH ${percentage::-1})\n"
+    out+="$label\n$(print_bar $WIDTH ${percentage::-1})\n"
 done
 
-print_columns "Disk space" "${text::-2}"
+print_columns "Disk space" "${out::-2}"
