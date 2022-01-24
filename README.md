@@ -1,7 +1,14 @@
-# Fancy MOTD
-Fancy, colorful MOTD written in bash. Server status at a glance.
+<img src="https://raw.githubusercontent.com/WieWaldi/fancy-motd/master/img/RZ-Amper_Logo_135x135.png" align="left" width="135px" height="135px" />
 
-![MOTD screenshot](readme-img.png)
+### Fancy MOTD by WieWaldi
+> *Fancy, colorful MOTD written in bash. Server status at a glance.*
+
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org)
+
+<br />
+
+[![MOTD screenshot](https://raw.githubusercontent.com/WieWaldi/fancy-motd/master/img/screenshot_1.png)]
 
 ## Usage
 
