@@ -8,7 +8,7 @@
 
 <br />
 
-[![MOTD screenshot](https://raw.githubusercontent.com/WieWaldi/fancy-motd/master/img/screenshot_1.png)]
+![MOTD screenshot](https://raw.githubusercontent.com/WieWaldi/fancy-motd/master/img/screenshot_1.png)
 
 ## Usage
 
