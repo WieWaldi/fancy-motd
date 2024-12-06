@@ -1,12 +1,9 @@
-<img src="https://raw.githubusercontent.com/WieWaldi/fancy-motd/master/img/RZ-Amper_Logo_135x135.png" align="left" width="135px" height="135px" />
+<img src="https://raw.githubusercontent.com/WieWaldi/badges/master/img/RZ-Amper_Logo_135x135.png" align="left" width="135px" height="135px" />
 
 ### Fancy MOTD by WieWaldi
-> *Fancy, colorful MOTD written in bash. Server status at a glance.*
-
-[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org)
-
-<br />
+> *Fancy, colorful MOTD written in bash. Server status at a glance.*  
+[![MIT Licence](https://raw.githubusercontent.com/WieWaldi/badges/master/badges/licence_mit.svg)](https://opensource.org/licenses/mit-license.php)
+![Maintained](https://raw.githubusercontent.com/WieWaldi/badges/master/badges/maintained_yes-green.svg)
 
 ![MOTD screenshot](https://raw.githubusercontent.com/WieWaldi/fancy-motd/master/img/screenshot_1.png)
 
