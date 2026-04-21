@@ -1,60 +1,64 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/config.sh                                                     |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Configuration file for Fancy MOTD                             |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-31                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
-# Provide default values for obligatory settings
-# Colors
-CA="${CA:-\e[34m}"  # Accent
-CO="${CO:-\e[32m}"  # Ok
-CW="${CW:-\e[33m}"  # Warning
-CE="${CE:-\e[31m}"  # Error
-CN="${CN:-\e[0m}"   # None
+                                                                                # Provide default values for obligatory settings
+                                                                                # Colors
+CA="\e[34m"                                                                     # Accent
+CO="\e[32m"                                                                     # Ok
+CW="\e[33m"                                                                     # Warning
+CE="\e[31m"                                                                     # Error
+CN="\e[0m"                                                                      # None
 
-# Max width used for components in second column
-WIDTH="${WIDTH:-50}"
+WIDTH="${WIDTH:-50}"                                                            # Max width used for components in second column
 
-# Source the config
-source "$CONFIG_PATH"
+source "$CONFIG_PATH"                                                           # Source the config file
 
 
-# Get some OS information
-get_os () {
+get_os () {                                                                     # Get some OS information
     read -r os kernel arch <<-EOF
         $(uname -srm)
 EOF
     [[ -f "/etc/os-release" ]] && source /etc/os-release
     export PRETTY_NAME os kernel arch
 
-    # Are we all set?
-    PRETTY_NAME="${PRETTY_NAME:="Unkown"}"
+    PRETTY_NAME="${PRETTY_NAME:="Unkown"}"                                      # Are we all set?
     os="${os:="Unkown"}"
     kernel="${kernel:="Unkown"}"
     arch="${arch:="Unkown"}"
 }
 
-# Prints given blocks of text side by side
-# $1 - left column
-# $2 - right column
-print_columns() {
-    [ -z "$2" ] && return
-    paste <(echo -e "${CA}$1${1:+:}${CN}") <(echo -e "$2")
+print_columns() {                                                               # Prints given blocks of text side by side
+    [ -z "$2" ] && return                                                       # $1 - left column
+    paste <(echo -e "${CA}$1${1:+:}${CN}") <(echo -e "$2")                      # $2 - right column
 }
 
-# Prints given text n times
-# $1 - text to print
-# $2 - how many times to print
-print_n() {
-    local out=""
-    for ((i=0; i<$2; i++)); do
+print_n() {                                                                     # Prints given text n times
+    local out=""                                                                # $1 - text to print
+    for ((i=0; i<$2; i++)); do                                                  # $2 - how many times to print
         out+="$1"
     done
     echo "$out"
 }
 
-# Prints bar divided in two parts by given percentage
-# $1 - bar width
-# $2 - percentage
-print_bar() {
-    local bar_width=$(($1 - 2))
-    local used_width=$(($2 * $bar_width / 100))
+print_bar() {                                                                   # Prints bar divided in two parts by given percentage
+    local bar_width=$(($1 - 2))                                                 # $1 - bar width
+    local used_width=$(($2 * $bar_width / 100))                                 # $2 - percentage
     local free_width=$(($bar_width - $used_width))
     local out=""
     out+="["
@@ -69,16 +73,11 @@ print_bar() {
     echo "$out"
 }
 
-# Prints text with color according to given value and two thresholds
-# $1 - text to print
-# $2 - current value
-# $3 - warning threshold
-# $4 - error threshold
-print_color() {
-    local out=""
-    if (( $("$bc" -l <<< "$2 < $3") )); then
-        out+="${CO}"
-    elif (( $("$bc" -l <<< "$2 >= $3 && $2 < $4") )); then
+print_color() {                                                                 # Prints text with color according to given value and two thresholds
+    local out=""                                                                # $1 - text to print
+    if (( $("$bc" -l <<< "$2 < $3") )); then                                    # $2 - current value
+        out+="${CO}"                                                            # $3 - warning threshold
+    elif (( $("$bc" -l <<< "$2 >= $3 && $2 < $4") )); then                      # $4 - error threshold
         out+="${CW}"
     else
         out+="${CE}"
@@ -87,12 +86,9 @@ print_color() {
     echo "$out"
 }
 
-# Prints text as either acitve or inactive
-# $1 - text to print
-# $2 - literal "active" or "inactive"
-print_status() {
-    local out=""
-    if [ "$2" == "active" ]; then
+print_status() {                                                                # Prints text as either acitve or inactive
+    local out=""                                                                # $1 - text to print
+    if [ "$2" == "active" ]; then                                               # $2 - literal "active" or "inactive"
         out+="${CO}▲${CN}"
     else
         out+="${CE}▼${CN}"
@@ -101,12 +97,9 @@ print_status() {
     echo "$out"
 }
 
-# Prints comma-separated arguments wrapped to the given width
-# $1 - width to wrap to
-# $2, $3, ... - values to print
-print_wrap() {
-    local width=$1
-    shift
+print_wrap() {                                                                  # Prints comma-separated arguments wrapped to the given width
+    local width=$1                                                              # $1 - width to wrap to
+    shift                                                                       # $2, $3, ... - values to print
     local out=""
     local line_length=0
     for element in "$@"; do
@@ -123,17 +116,14 @@ print_wrap() {
     [ -n "$out" ] && echo "${out::-2}"
 }
 
-# Prints some text justified to left and some justified to right
-# $1 - total width
-# $2 - left text
-# $3 - right text
-print_split() {
-    local visible_first visible_second invisible_first_width invisible_second_width total_width \
+print_split() {                                                                 # Prints some text justified to left and some justified to right
+    local visible_first visible_second invisible_first_width \
+        invisible_second_width total_width \
         first_half_width second_half_width format_string
 
-    visible_first="$(strip_ansi "$2")"
-    visible_second="$(strip_ansi "$3")"
-    invisible_first_width=$((${#2} - ${#visible_first}))
+    visible_first="$(strip_ansi "$2")"                                          # $1 - total width
+    visible_second="$(strip_ansi "$3")"                                         # $2 - left text
+    invisible_first_width=$((${#2} - ${#visible_first}))                        # $3 - right text
     invisible_second_width=$((${#3} - ${#visible_second}))
     total_width=$(($1 + invisible_first_width + invisible_second_width))
 
@@ -148,16 +138,11 @@ print_split() {
     printf $format_string "${2:0:$first_half_width}" "${3:0:$second_half_width}"
 }
 
-# Prints one line of text, truncates it at specified width and add ellipsis.
-# Truncation can occur either at the start or at the end of the string.
-# $1 - line to print
-# $2 - width limit
-# $3 - "start" or "end", default "end"
-print_truncate() {
-    local out
-    local new_length=$(($2 - 1))
-    # Just echo the string if it's shorter than the limit
-    if [ ${#1} -le $2 ]; then
+print_truncate() {                                                              # Prints one line of text, truncates it at specified width and add ellipsis.
+    local out                                                                   # Truncation can occur either at the start or at the end of the string.
+    local new_length=$(($2 - 1))                                                # $1 - line to print
+    # Just echo the string if it's shorter than the limit                       # $2 - width limit
+    if [ ${#1} -le $2 ]; then                                                   # $3 - "start" or "end", default "end"
         out="$1"
     elif [ -z "$3" ] || [ "$3" = "end" ]; then
         out="${1::$new_length}…"
@@ -167,26 +152,22 @@ print_truncate() {
     echo "$out"
 }
 
-# Strips ANSI color codes from given string
-# $1 - text to strip
-strip_ansi() {
-    echo "$(echo -e "$1" | "$sed" -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")"
+strip_ansi() {                                                                          # Strips ANSI color codes from given string
+    echo "$(echo -e "$1" | "$sed" -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")"    # $1 - text to strip
 }
 
-# Following is basically simple `column` reimplementation because it doesn't work consistently.
-# I fucked way too long with this.
-# $1 - text to columnize
-# $2 - column separator
-# $3 - row separator
-columnize() {
+columnize() {                                                                   # Following is basically simple `column` reimplementation because it doesn't work consistently.
+                                                                                # I fucked way too long with this.
+                                                                                # $1 - text to columnize
+                                                                                # $2 - column separator
+                                                                                # $3 - row separator
     local left_lines left_widths right_lines max_left_width left right visible_left \
         padding_width padding
-    left_lines=()       # Lines in left column
-    left_widths=()      # Numbers of visible chars in left lines
-    right_lines=()      # Lines in right column
-    max_left_width=0    # Max width of left column line
-    # Iterate over lines and populate above variables
-    while IFS="$3" read -r line; do
+    left_lines=()                                                               # Lines in left column
+    left_widths=()                                                              # Numbers of visible chars in left lines
+    right_lines=()                                                              # Lines in right column
+    max_left_width=0                                                            # Max width of left column line
+    while IFS="$3" read -r line; do                                             # Iterate over lines and populate above variables
         left="$(echo -e "$line" | cut -d "$2" -f 1)"
         right="$(echo -e "$line" | cut -d "$2" -f 2)"
         left_lines+=("$left")
@@ -195,11 +176,10 @@ columnize() {
         left_widths+=(${#visible_left})
         [ ${#visible_left} -gt $max_left_width ] && max_left_width=${#visible_left}
     done <<< "$1"
-
-    # Iterate over lines and print them while padding left column with spaces
-    for ((i=0; i<${#left_lines[@]}-1; i++)); do
+    for ((i=0; i<${#left_lines[@]}-1; i++)); do                                 # Iterate over lines and print them while padding left column with spaces
         padding_width=$((max_left_width - left_widths[$i]))
         padding="$(print_n " " $padding_width)"
         echo -e "${left_lines[$i]}${padding}  ${right_lines[$i]}"
     done
 }
+# +----- End ------------------------------------------------------------------+
