@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/00-atest                                              |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to tiker with                               |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
-#======== ATEST: Template and Test Script =====================================
+# +----- ATEST: Template and Test Script --------------------------------------+
 # The sole purpose of this module is to have one for tinkering around.
 # This module is disabled by default through config.sh.
 
@@ -27,3 +44,4 @@ out="$(atest)"
 
 # Call function "print_columns" from framewark.sh.
 print_columns "ATEST" "$out"
+# +----- End ------------------------------------------------------------------+

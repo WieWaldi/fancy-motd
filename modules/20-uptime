@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/20-uptime                                             |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to show current uptime                      |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -33,3 +50,4 @@ m="$((s / 60 % 60))"
 out="${d}d ${h}h ${m}m"
 
 print_columns "Uptime" "$out"
+# +----- End ------------------------------------------------------------------+

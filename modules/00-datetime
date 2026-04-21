@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
-
-#======== ATEST: Template and Test Script =====================================
-# The sole purpose of this module is to have one for tinkering around.
-# This module is disabled by default through config.sh.
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/00-datetime                                           |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to show date and time                       |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -22,3 +35,4 @@ out="$(get_DateTime)"
 
 # Call function "print_columns" from framewark.sh.
 print_columns "Time" "$out"
+# +----- End ------------------------------------------------------------------+

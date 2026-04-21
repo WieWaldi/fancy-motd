@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/32-disk                                               |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to print disk information                   |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -29,3 +46,4 @@ for disk in "${disks[@]}"; do
 done
 
 print_columns "Disk space" "${out::-2}"
+# +----- End ------------------------------------------------------------------+

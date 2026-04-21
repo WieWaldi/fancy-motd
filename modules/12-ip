@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/12-ip                                                 |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to show current IP Address                  |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -25,3 +42,4 @@ IFS=$'\n' read -r -a ips <<< $ips_v4
 out="$(print_wrap $WIDTH "${ips[@]}")"
 
 print_columns "IP addresses" "$out"
+# +----- End ------------------------------------------------------------------+
