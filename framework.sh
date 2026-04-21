@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # +----------------------------------------------------------------------------+
-# | ./fancy-motd/config.sh                                                     |
+# | ./fancy-motd/framework.sh                                                  |
 # +----------------------------------------------------------------------------+
 # |       Usage: ---                                                           |
-# | Description: Configuration file for Fancy MOTD                             |
+# | Description: Framework for Fancy MOTD                                      |
 # |    Requires: Fancy MOTD                                                    |
 # |       Notes: ---                                                           |
 # |      Author: Waldemar Schroeer                                             |

@@ -79,4 +79,6 @@ For the output to be properly formatted it has to use `print_columns` function f
 Module files have to start with a two digit number followed by a hyphen. You may disable modules by simply rename the module file.
 
 ## Credits
-Fancy MOTD is hugely inspired by [this repo](https://github.com/HermannBjorgvin/MOTD) by Hermann Björgvin.
+Fancy MOTD is hugely inspired by these repos
+> [MOTD](https://github.com/HermannBjorgvin/MOTD) by Hermann Björgvin.
+> [Fancy MOTD](https://github.com/bcyran/fancy-motd) by Bazyli Cyran.

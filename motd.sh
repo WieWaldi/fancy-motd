@@ -1,13 +1,26 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/motd.sh                                                       |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy Message Of The Day                                      |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-31                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
-# Don't change! We want predictable outputs
-export LANG="en_US.UTF-8"
+export LANG="en_US.UTF-8"                                                       # Set the locale to UTF-8
+export BASE_DIR="$(dirname "$(readlink -f "$0")")"                              # Dir of this script
 
-# Dir of this script
-export BASE_DIR="$(dirname "$(readlink -f "$0")")"
-
-# Set config path
-if [ -z ${1+x} ]; then
+if [ -z ${1+x} ]; then                                                          # Set config path
     export CONFIG_PATH="$BASE_DIR/config.sh"
     if [ ! -f "$CONFIG_PATH" ] && [ -f "$BASE_DIR/config.sh.example" ]; then
         cp $BASE_DIR/config.sh.example $CONFIG_PATH
@@ -16,21 +29,15 @@ else
     export CONFIG_PATH="$1"
 fi
 
-# Check for config path
-if [ ! -f "$CONFIG_PATH" ]; then
+if [ ! -f "$CONFIG_PATH" ]; then                                                # Check for config path
     echo "Error: No config file found."
     echo "       You may provide one like this: $0 /your/path/config.sh"
     exit 1
 fi
 
-# Source the framework
-source "$BASE_DIR/framework.sh"
-
-# Get OS information here instead of calling uname several times.
-get_os
-
-# Get our goods together
-case $os in 
+source "$BASE_DIR/framework.sh"                                                 # Source the framework
+get_os                                                                          # Get OS information here instead of calling uname several times.
+case $os in                                                                     # Get our goods together
     Linux*)
     export awk="awk"
     export sed="sed"
@@ -50,8 +57,7 @@ case $os in
     ;;
 esac
 
-# Run the modules and collect output
-output=""
+output=""                                                                       # Run the modules and collect output
 modules="$(ls -1 "$BASE_DIR/modules" | perl -nle 'print if m{^(?<!\d)\d{2}(?!\d)-}')"
 while read -r module; do
     # module_output="$($BASE_DIR/modules/$module 2>/dev/null)"
@@ -61,5 +67,5 @@ while read -r module; do
     [ -n "$module_output" ] && output+=$'\n'
 done <<< "$modules"
 
-# Print the output in pretty columns
-columnize "$output" $'\t' $'\n'
+columnize "$output" $'\t' $'\n'                                                 # Print the output in pretty columns
+# +----- End ------------------------------------------------------------------+
