@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/33-services                                           |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to monitor services                         |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -7,13 +24,30 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_SERVICES_RUN+x}" ]] && exit 0
 [[ ! "$MOD_SERVICES_RUN" = "true" ]] && exit 0
 
-statuses=()
-for key in "${!services[@]}"; do
-    # systemctl is-active returns non-zero code if service is inactive
-    set +e; status=$(systemctl is-active ${services[$key]}); set -e
-    statuses+=("$(print_status "$key" "$status")")
-done
+case $os in
+    Linux*)
+        statuses=()
+        for key in "${!services[@]}"; do
+            # systemctl is-active returns non-zero code if service is inactive
+            set +e; status=$(systemctl is-active ${services[$key]}); set -e
+            statuses+=("$(print_status "$key" "$status")")
+        done
+        out="$(print_wrap $WIDTH "${statuses[@]}")"
+    ;;
 
-out="$(print_wrap $WIDTH "${statuses[@]}")"
+    FreeBSD)
+        statuses=()
+        for key in "${!services[@]}"; do
+            # service status returns non-zero code if service is inactive
+            set +e; status=$(service ${services[$key]} status > /dev/null 2>&1 && echo "active" || echo "inactive"); set -e
+            statuses+=("$(print_status "$key" "$status")")
+        done
+        out="$(print_wrap $WIDTH "${statuses[@]}")"
+    ;;
 
+    SunOS)
+        out="Sorry, not implemented for SunOS."
+    ;;
+esac
 print_columns "Services" "$out"
+# +----- End ------------------------------------------------------------------+
