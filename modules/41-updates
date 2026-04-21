@@ -45,15 +45,7 @@ case $os in
     ;;
 
     FreeBSD)
-        if type freebsd-update >/dev/null 2>&1; then
-            updates=$(freebsd-update fetch 2>&1 | grep "No updates needed" -c)
-            if [ $updates -eq 0 ]; then
-                updates=1
-            fi
-        else
-            updates="N/A"
-        fi
-        out="$(print_color "$updates available" $updates 1 50)"
+        out="$(pkg upgrade -n | grep "Number of pack" | sed 's/Number of packages //')"
     ;;
 
     SunOS)
