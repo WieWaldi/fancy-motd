@@ -1,8 +1,8 @@
-MIT License
+### MIT License
 
-Copyright (c) 2020 Jack Johannesen
-Copyright (c) 2020 Bazyli Cyran
-Copyright (c) 2021 Waldemar Schroeer
+> Copyright (c) 2020 Jack Johannesen  
+  Copyright (c) 2020 Bazyli Cyran  
+  Copyright (c) 2021 Waldemar Schroeer  
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
