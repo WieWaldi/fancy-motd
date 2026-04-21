@@ -34,9 +34,9 @@ fi
 
 hostname="${HOSTNAME:-$(hostname)}"
 if [ "$MOD_BANNER_PRINT" = "HOSTNAME" ]; then
-    out="${CA}$(figlet -f ${MOD_BANNER_FONT} ${hostname%%.*})${CN}"
+    out="${CA}$(figlet -w ${WIDTH} -c -f ${MOD_BANNER_FONT} ${hostname%%.*})${CN}"
 else
-    out="${CA}$(figlet -f ${MOD_BANNER_FONT} $hostname)${CN}"
+    out="${CA}$(figlet -w ${WIDTH} -c -f ${MOD_BANNER_FONT} $hostname)${CN}"
 fi
 
 print_columns "" "$out"
