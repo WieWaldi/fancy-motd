@@ -22,7 +22,7 @@ source "$BASE_DIR/framework.sh"
 #}
 
 get_Weather () {
-    curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?${MOD_WEATHER_OPTIONS[@]}
+    curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}${MOD_WEATHER_OPTIONS[@]}
 }
 
 
