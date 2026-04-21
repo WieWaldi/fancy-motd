@@ -89,9 +89,11 @@ print_color() {                                                                 
 print_status() {                                                                # Prints text as either acitve or inactive
     local out=""                                                                # $1 - text to print
     if [ "$2" == "active" ]; then                                               # $2 - literal "active" or "inactive"
-        out+="${CO}▲${CN}"
+        # out+="${CO}▲${CN}"
+        out+="${CO}${SIGCHARUP}${CN}"
     else
-        out+="${CE}▼${CN}"
+        # out+="${CE}▼${CN}"
+        out+="${CE}${SIGCHARDO}${CN}"
     fi
     out+=" $1${CN}"
     echo "$out"

@@ -18,83 +18,69 @@
 # +----------------------------------------------------------------------------+
 
 # +----- General Config -------------------------------------------------------+
-# Colors
+                                                                                # Colors
 CA="\e[34m"                                                                     # Accent
 CO="\e[32m"                                                                     # Ok
 CW="\e[33m"                                                                     # Warning
 CE="\e[31m"                                                                     # Error
 CN="\e[0m"                                                                      # None
-BARCHARUSED="="
-BARCHARFREE="="
-
-# In case your terminal/window can't handle color sequences you may use the
-# following set up.
-# CA=""
-# CO=""
-# CW=""
-# CE=""
-# CN=""
-# BARCHARUSED=""
-# BARCHARFREE=""
-
-# Max width used for components in second column
-WIDTH=50
+                                                                                # In case your terminal/window can't handle color sequences you may use the
+                                                                                # following set up.
+                                                                                # CA=""
+                                                                                # CO=""
+                                                                                # CW=""
+                                                                                # CE=""
+                                                                                # CN=""
+BARCHARUSED="="                                                                 # BARCHARUSED=""
+BARCHARFREE="="                                                                 # BARCHARFREE=""
+SIGCHARUP="▲"                                                                   # SIGCHARUP=""
+SIGCHARDO="▼"                                                                   # SIGCHARDO=""
+CERTCHAROK="●"                                                                  # CERTCHAROK="󱆆"
+CERTCHAREX="●"                                                                  # CERTCHAREX="󱆇"
+WIDTH=50                                                                        # Max width used for components in second column
 
 # +----- MODULES --------------------------------------------------------------+
 
-# ATEST
-MOD_ATEST_RUN="false"
+MOD_ATEST_RUN="false"                                                           # Set to "true" to run ATEST module and display results in MOTD. Set to "false" to disable ATEST module.
 
-# BANNER
-MOD_BANNER_RUN="true"
-MOD_BANNER_PRINT="HOSTNAME"
-MOD_BANNER_FONT="smslant.flf"
+MOD_BANNER_RUN="true"                                                           # Set to "true" to print hostname banner. Set to "false" to disable BANNER module.
+MOD_BANNER_PRINT="HOSTNAME"                                                     # Options: HOSTNAME, FQDN,
+MOD_BANNER_FONT="smslant.flf"                                                   # Font file for banner. Place font file in ./fonts/ directory. You can find more fonts at https://www.figlet.org/fontdb.cgi
 
-# DATETIME
-MOD_DATETIME_RUN="true"
+MOD_DATETIME_RUN="true"                                                         # Set to "true" to print date and time banner. Set to "false" to disable DATETIME module. 
 
-# USER
-MOD_USER_RUN="true"
-MOD_USER_LAST="true"
+MOD_USER_RUN="true"                                                             # Set to "true" to print current logged in user. Set to "false" to disable USER module.
+MOD_USER_LAST="true"                                                            # Set to "true" to display last logged in user in USER module. Set to "false" to disable this feature in USER module.
 
-# OS
-MOD_OS_RUN="true"
-MOD_OS_VERBOSE="true"
+MOD_OS_RUN="true"                                                               # Set to "true" to print OS information. Set to "false" to disable OS module.
+MOD_OS_VERBOSE="true"                                                           # Set to "true" to display more detailed information in OS module. Set to "false" to disable this feature in OS module.
 
-# IP
-MOD_IP_RUN="true"
+MOD_IP_RUN="true"                                                               # Set to "true" to print current IP address. Set to "false" to disable IP module.
 
-# PUBLIC-IP
-MOD_PUBLIC_IP_RUN="true"
+MOD_PUBLIC_IP_RUN="true"                                                        # Set to "true" to print public IP address. Set to "false" to disable PUBLIC-IP module.
 
-# UPTIME
-MOD_UPTIME_RUN="true"
+MOD_UPTIME_RUN="true"                                                           # Set to "true" to print systems uptime. Set to "false" to disable UPTIME module.
 
-# LOAD
-MOD_LOAD_RUN="true"
+MOD_LOAD_RUN="true"                                                             # Set to "true" to print systems LOAD. Set to "false" to disable LOAD module.
 
-# MEMORY
-MOD_MEMORY_RUN="true"
-MOD_MEMORY_FREEBSD_VERBOSE="true"
+MOD_MEMORY_RUN="true"                                                           # Set to "true" to print memory information. Set to "false" to disable MEMORY module.
+MOD_MEMORY_FREEBSD_VERBOSE="true"                                               # Set to "true" to display more detailed information in MEMORY module on FreeBSD. Set to "false" to disable this feature in MEMORY module on FreeBSD.
 
-# DISK
-MOD_DISK_RUN="true"
+MOD_DISK_RUN="true"                                                             # Set to "true" to print disk information. Set to "false" to disable DISK module.    
 
-# SERVICES
-MOD_SERVICES_RUN="true"
-# List of services to check
-declare -A services
+MOD_SERVICES_RUN="true"                                                         # Set to "true" to run SERVICES module and display results in MOTD. Set to "false" to disable SERVICES module.
+declare -A services                                                             # List of services to check
 services["Apache"]="httpd"
 services["AMD GPU"]="amdgpu-fancontrol"
 services["BIND"]="named"
 services["Cron"]="cron"
 services["DHCPD"]="dhcpd"
+services["Docker"]="docker"
 services["IP FW"]="ipfw"
 services["inetd"]="inetd"
 services["NewSyslog"]="newsyslogd"
 services["NTPD"]="ntpd"
 services["nginx"]="nginx"
-services["Docker"]="docker"
 services["qemu GA"]="qemu-guest-agent"
 services["SNMP"]="snmpd"
 services["SSH"]="sshd"
@@ -102,27 +88,22 @@ services["Syslog"]="syslogd"
 services["Fail2Ban"]="fail2ban"
 services["UFW"]="ufw"
 
-# CERTIFICATE VALIDITY
-MOD_CERT_RUN="true"
-# Short Name; FQDN; TCP Port
-declare -A certhostlist
+MOD_CERT_RUN="true"                                                             # Set to "true" to run CERTIFICATE VALIDITY module and display results in MOTD. Set to "false" to disable CERTIFICATE VALIDITY module.
+declare -A certhostlist                                                         # List of hosts to check certificate validity for. Format: certhostlist[1]="Short Name;FQDN;TCP Port"
+certhostlist[1]="Google WWW;www.google.de;443"
 certhostlist[2]="RZ-Amper WWW;www.rz-amper.de;443"
 certhostlist[3]="RZ-Amper IMAP;mail.rz-amper.de;993"
 certhostlist[4]="RZ-Amper SMTP;mail.rz-amper.de;465"
 
-# TMUX
-MOD_TMUX_RUN="true"
+MOD_TMUX_RUN="true"                                                             # Set to "true" to print TMUX session information. Set to "false" to disable TMUX module.
 
-# UPDATES
-MOD_UPDATES_RUN="true"
+MOD_UPDATES_RUN="true"                                                          # Set to "true" to print informations about available updates. Set to "false" to disable UPDATES module.
 
-# QUOTE
-MOD_QUOTE_RUN="true"
+MOD_QUOTE_RUN="true"                                                            # Set to "true" to print fortune quotes. Set to "false" to disable QUOTE module.
 
-# WEATHER
-MOD_WEATHER_RUN="true"
-MOD_WEATHER_LOCATION="Fuerstenfeldbruck"
-MOD_WEATHER_STYLE="small"
-MOD_WEATHER_OPTIONS="?0?F?Q"
+MOD_WEATHER_RUN="true"                                                          # Set to "true" to print current weather. Set to "false" to disable WEATHER module.
+MOD_WEATHER_LOCATION="Fuerstenfeldbruck"                                        # Location for weather information. You can use city name, city name with country code (e.g. "Fuerstenfeldbruck,DE") or coordinates (e.g. "48.1833,11.2833"). For more information see https://openweathermap.org/current#name
+MOD_WEATHER_STYLE="small"                                                       # Style for weather information. Options: small, medium, large. Small style only shows temperature and weather condition. Medium style also shows humidity and wind speed. Large style also shows sunrise and sunset time.
+MOD_WEATHER_OPTIONS="?0?F?Q"                                                    # Additional options for weather information.
 
 # +----- End ------------------------------------------------------------------+

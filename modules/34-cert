@@ -36,9 +36,9 @@ cert_validity () {
         certLineTime=$(${date} -d "${certTime}" +"%a %b %d %Y")
         certTimestamp=$(${date} -d "${certTime}" +%s)
         if [ "${certTimestamp}" -ge "${currentTime}" ]; then
-            sign="${CO}●${CN}"
+            sign="${CO}${CERTCHAROK}${CN}"
         else
-            sign="${CE}●${CN}"
+            sign="${CE}${CERTCHAREX}${CN}"
         fi
         echo "$(print_split "${WIDTH}" "${sign}${shortname}" "$certLineTime")"
     done
