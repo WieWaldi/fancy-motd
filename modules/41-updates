@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/41-updates                                            |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to check for updates                        |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-05-30                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -eu
 source "$BASE_DIR/framework.sh"
@@ -7,20 +24,42 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_UPDATES_RUN+x}" ]] && exit 00
 [[ ! "$MOD_UPDATES_RUN" = "true" ]] && exit 00
 
-if type checkupdates >/dev/null 2>&1; then
-    updates=$(checkupdates 2> /dev/null | wc -l )
-    if type yay >/dev/null 2>&1; then
-        updates_aur=$(yay -Qum 2> /dev/null | wc -l)
-        updates=$(($updates + $updates_aur))
-    fi
-elif type dnf >/dev/null 2>&1; then
-    updates=$(dnf check-update --quiet | grep -v "^$" | wc -l)
-elif type apt >/dev/null 2>&1; then
-    updates=$(apt list --upgradable 2>/dev/null | grep upgradable | wc -l)
-else
-    updates="N/A"
-fi
 
-out="$(print_color "$updates available" $updates 1 50)"
+
+case $os in
+    Linux*)
+        if type checkupdates >/dev/null 2>&1; then
+            updates=$(checkupdates 2> /dev/null | wc -l )
+            if type yay >/dev/null 2>&1; then
+                updates_aur=$(yay -Qum 2> /dev/null | wc -l)
+                updates=$(($updates + $updates_aur))
+            fi
+        elif type dnf >/dev/null 2>&1; then
+            updates=$(dnf check-update --quiet | grep -v "^$" | wc -l)
+        elif type apt >/dev/null 2>&1; then
+            updates=$(apt list --upgradable 2>/dev/null | grep upgradable | wc -l)
+        else
+            updates="N/A"
+        fi
+        out="$(print_color "$updates available" $updates 1 50)"
+    ;;
+
+    FreeBSD)
+        if type freebsd-update >/dev/null 2>&1; then
+            updates=$(freebsd-update fetch 2>&1 | grep "No updates needed" -c)
+            if [ $updates -eq 0 ]; then
+                updates=1
+            fi
+        else
+            updates="N/A"
+        fi
+        out="$(print_color "$updates available" $updates 1 50)"
+    ;;
+
+    SunOS)
+        out="Sorry, not implemented for SunOS."
+    ;;
+esac
 
 print_columns "Updates" "$out"
+# +----- End ------------------------------------------------------------------+
