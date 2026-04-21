@@ -1,30 +1,41 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/60-weather                                            |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to show current weather                     |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-03-29                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
 
 # Check if module is enabled
-# [[ -z "${MOD_WEATHER_RUN+x}" ]] && exit 0
 [[ ! "$MOD_WEATHER_RUN" = "true" ]] && exit 0
 
 # Check if location is set. If not then use "Berlin" as location.
 [[ -z "${MOD_WEATHER_LOCATION+x}" ]] && MOD_WEATHER_LOCATION="Berlin"
-[[ -z "${MOD_WEATHER_STYLE+x}" ]] && MOD_WEATHER_STYLE="small"
-[[ -z "${MOD_WEATHER_OPTIONS+x}" ]] && MOD_WEATHER_OPTIONS="%c%t+(%f)+%h+%w+%P+%m"
-
-
-#get_Weather () {
-#    if [[ "$MOD_WEATHER_STYLE" = "small" ]]; then 
-#        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?format="${MOD_WEATHER_OPTIONS}"
-#    else
-#        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}?0Q
-#    fi
-#}
+[[ -z "${MOD_WEATHER_OPTIONS+x}" ]] && MOD_WEATHER_OPTIONS="?0?F?Q"
 
 get_Weather () {
-    curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}${MOD_WEATHER_OPTIONS[@]}
+    # Check if curl is installed
+    if ! command -v curl &> /dev/null; then
+        echo "curl is not installed."
+    else
+        curl --silent http://wttr.in/${MOD_WEATHER_LOCATION}${MOD_WEATHER_OPTIONS[@]}
+    fi
 }
-
 
 out=$(get_Weather)
 print_columns "Current Weather" "$out"
+# +----- End ------------------------------------------------------------------+

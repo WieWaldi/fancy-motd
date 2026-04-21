@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/13-public-ip                                          |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to show current weather                     |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-04-20                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -7,8 +24,15 @@ source "$BASE_DIR/framework.sh"
 [[ -z "${MOD_PUBLIC_IP_RUN=x}" ]] && exit 0
 [[ ! "$MOD_PUBLIC_IP_RUN" = "true" ]] && exit 0
 
-ip_v4="$(curl --silent http://ifconfig.me/ip)"
+get_Public_IP () {
+    # Check if curl is installed
+    if ! command -v curl &> /dev/null; then
+        echo "curl is not installed."
+    else
+        curl --silent http://ifconfig.me/ip
+    fi
+}
 
-out="$(print_wrap $WIDTH "${ip_v4}")"
-
+out="$(print_wrap $WIDTH "$(get_Public_IP)")"
 print_columns "Public IP address" "$out"
+# +----- End ------------------------------------------------------------------+

@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
-
-#======== CERT: Check validity of certificates ================================
+#
+# +----------------------------------------------------------------------------+
+# | ./fancy-motd/modules/34-cert                                               |
+# +----------------------------------------------------------------------------+
+# |       Usage: ---                                                           |
+# | Description: Fancy MOTD module to Check validity of certificates           |
+# |    Requires: Fancy MOTD                                                    |
+# |       Notes: ---                                                           |
+# |      Author: Waldemar Schroeer                                             |
+# |     Company: Rechenzentrum Amper                                           |
+# |     Version: 1.1                                                           |
+# |     Created: 2021-05-30                                                    |
+# |    Revision: 2026-04-21                                                    |
+# |                                                                            |
+# | Copyright © 2022 Waldemar Schroeer                                         |
+# |                  waldemar.schroeer(at)rz-amper.de                          |
+# +----------------------------------------------------------------------------+
 
 set -euo pipefail
 source "$BASE_DIR/framework.sh"
@@ -34,3 +49,4 @@ out="$(cert_validity)"
 
 # Call function "print_columns" from framewark.sh.
 print_columns "Certificate Validity" "$out"
+# +----- End ------------------------------------------------------------------+
