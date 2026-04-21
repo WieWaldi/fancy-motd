@@ -40,7 +40,7 @@ cert_validity () {
         else
             sign="${CE}●${CN}"
         fi
-        echo "$(print_split "$(( $WIDTH + 11 ))" "${sign}${shortname}" "$certLineTime")"
+        echo "$(print_split "${WIDTH}" "${sign}${shortname}" "$certLineTime")"
     done
 }
 
